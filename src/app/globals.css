@@ -891,6 +891,26 @@ a {
   .station-boxes {
     flex-direction: column;
   }
+
+  /* Audience selector — stack vertically */
+  .audience-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Case study stats — tighter on mobile */
+  .case-study-stats span:first-child {
+    font-size: 1.125rem !important;
+  }
+
+  /* Process step tabs — smaller text in 2×2 grid */
+  .process-tab-label {
+    font-size: 0.6875rem !important;
+  }
+
+  /* Station number watermark — smaller on mobile */
+  .station-watermark {
+    display: none;
+  }
 }
 
 /* ===== RESPONSIVE: TABLET (max-width: 991px) ===== */

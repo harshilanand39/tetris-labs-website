@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { getCalApi } from '@calcom/embed-react';
 
 /* ─── constants ─── */
 const BG_TILE =
@@ -12,12 +13,59 @@ const STATIONS_META = [
   'what we build',
   'who we serve',
   'results',
+  'testimonials',
   'how we work',
   'our edge',
   'get started',
 ];
 
 const TRUST_PARTNERS = ['Up Top', 'Woodstock', 'Corn'];
+
+const CASE_STUDIES = [
+  {
+    client: 'Up Top',
+    stats: [
+      { value: '$3M+', label: 'revenue' },
+      { value: '400+', label: 'clients' },
+      { value: '0', label: 'headcount added' },
+    ],
+    title: 'Systems that helped Up Top scale to over $3M in revenue and 400+ clients',
+    description: 'What we built: Automated talent pipeline, client tracking system, custom ATS, cross-tool workflow integrations, and an onboarding engine that scaled without adding headcount.',
+    tags: ['Talent Pipeline', 'Custom ATS', 'Client CRM', 'Workflow Automations', 'Onboarding Engine'],
+  },
+  {
+    client: 'Caladan',
+    stats: [
+      { value: 'TBD', label: 'stat 1' },
+      { value: 'TBD', label: 'stat 2' },
+      { value: 'TBD', label: 'stat 3' },
+    ],
+    title: 'TBD — Caladan case study headline',
+    description: 'TBD — description of what was built for Caladan.',
+    tags: ['Tag 1', 'Tag 2', 'Tag 3'],
+  },
+];
+
+const TESTIMONIALS = [
+  {
+    quote: "Working with Harshil was an absolute dream. My contacts, documents and advisory services framework was literally ALL over the place. In a short period of time Harshil listened to me, made recommendations, helped me execute on said recommendations, and even built some new custom flows for me. Harshil is patient, hardworking, detail oriented and has become a pivotal partner in not only the nuts and bolts, but also the strategy of my business moving forward.",
+    name: "Adam Mastrelli",
+    title: "US Partner, Woodstock Fund",
+    photo: "/images/adam-mastrelli.png",
+  },
+  {
+    quote: "I've worked with Harshil for the past ~2 years on custom recruiting solutions and applicant tracking systems. Most recently, when I took over recruiting and talent at SCRIB3, Harshil helped us build out our entire recruiting solution on the backend and has been extremely helpful with tweaks and updates after going live. With the help of Harshil and the Notion he built us, we've been able to make 50 hires and double in size within the past 6 months.",
+    name: "William Burleson",
+    title: "Head of Talent, SCRIB3",
+    photo: "/images/william-burleson.png",
+  },
+  {
+    quote: "Of all the wins we've had at Up Top in the past year, none have been more impactful than building out this CRM with Harshil and the team. It's turned me from an unhinged sales guy who hates process, to an operator running a clean business. At this point, I can't imagine my company functioning without it. Harshil was extremely helpful in walking me through the discovery process, suggesting new features, and delivering on solutions to exactly what I needed to maximize efficiency and organization.",
+    name: "Dan Eskow",
+    title: "Founder, Up Top Search",
+    photo: "/images/dan-eskow.png",
+  },
+];
 
 const PROBLEM_PAIRS = [
   {
@@ -597,6 +645,13 @@ function ProblemDetailCard({ pair }: { pair: (typeof PROBLEM_PAIRS)[0] }) {
    ═══════════════════════════════════════════ */
 
 export default function Home() {
+  useEffect(() => {
+    (async function () {
+      const cal = await getCalApi({ namespace: 'discovery-call' });
+      cal('ui', { hideEventTypeDetails: false, layout: 'month_view' });
+    })();
+  }, []);
+
   const [loading, setLoading] = useState(true);
   const [heroVisible, setHeroVisible] = useState(true);
   const [station, setStation] = useState(0);
@@ -607,6 +662,10 @@ export default function Home() {
   const [activeProblem, setActiveProblem] = useState(0);
   const [activeBuild, setActiveBuild] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
+  const [activeCaseStudy, setActiveCaseStudy] = useState(0);
+  const [caseStudyDir, setCaseStudyDir] = useState(1);
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [testimonialDir, setTestimonialDir] = useState(1);
   const lastScrollTime = useRef(0);
   const stationRef = useRef(0);
   const navLocked = useRef(false);
@@ -620,33 +679,48 @@ export default function Home() {
   /* go to station */
   const goStation = useCallback((s: number) => {
     if (s < 0) s = 0;
-    if (s > 8) s = 8;
+    if (s > 9) s = 9;
     stationRef.current = s;
     setStation(s);
     setHeroVisible(s === 0);
-    setNavVisible(s > 0 && s < 8);
-    setFooterVisible(s === 8);
+    setNavVisible(s > 0 && s < 9);
+    setFooterVisible(s === 9);
     setSelectorOpen(false);
     if (s === 1) setActiveProblem(0);
     if (s === 2) setActiveBuild(0);
     if (s === 3) setActiveAudience(0);
-    if (s === 5) setActiveStep(0);
+    if (s === 4) setActiveCaseStudy(0);
+    if (s === 5) setActiveTestimonial(0);
+    if (s === 6) setActiveStep(0);
   }, []);
 
   /* scroll / key / touch navigation — registered once, reads station via ref */
   useEffect(() => {
     if (loading) return;
 
+    let quietTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const wheel = (e: WheelEvent) => {
+      e.preventDefault();
+      // Navigate only on the first event of a gesture (when not locked)
+      if (!navLocked.current) {
+        navLocked.current = true;
+        goStation(stationRef.current + (e.deltaY > 0 ? 1 : -1));
+      }
+      // Keep resetting the timer on every event (including momentum),
+      // so the lock only releases after scrolling has fully stopped.
+      if (quietTimer) clearTimeout(quietTimer);
+      quietTimer = setTimeout(() => {
+        navLocked.current = false;
+        quietTimer = null;
+      }, 400);
+    };
+
     const navigate = (dir: 1 | -1) => {
       if (navLocked.current) return;
       navLocked.current = true;
       goStation(stationRef.current + dir);
       setTimeout(() => { navLocked.current = false; }, 900);
-    };
-
-    const wheel = (e: WheelEvent) => {
-      e.preventDefault();
-      navigate(e.deltaY > 0 ? 1 : -1);
     };
 
     const key = (e: KeyboardEvent) => {
@@ -676,6 +750,7 @@ export default function Home() {
       window.removeEventListener('keydown', key);
       window.removeEventListener('touchstart', ts);
       window.removeEventListener('touchend', te);
+      if (quietTimer) clearTimeout(quietTimer);
     };
   }, [loading, goStation]);
 
@@ -720,32 +795,62 @@ export default function Home() {
             key="preloader"
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8, ease: EASE_OUT }}
-            className="fixed inset-0 z-[10000] flex flex-col items-center justify-center"
+            className="fixed inset-0 z-[10000] flex items-center justify-center"
             style={{ background: '#7C3AED' }}
           >
-            <div className="flex items-end gap-2">
-              {[
-                { h: 'h-14', bg: '#22D3EE' },
-                { h: 'h-10', bg: '#1A0B2E' },
-                { h: 'h-16', bg: 'white' },
-                { h: 'h-12', bg: '#22D3EE' },
-              ].map((block, i) => (
-                <div
-                  key={i}
-                  className={`preloader-image w-10 ${block.h} rounded-sm`}
-                  style={{ backgroundColor: block.bg, opacity: 0.9 }}
-                />
-              ))}
-            </div>
-            <div className="mt-8 w-48">
-              <div className="progress-bar">
-                <motion.div
-                  className="progress-bar-fill"
-                  initial={{ width: '0%' }}
-                  animate={{ width: '100%' }}
-                  transition={{ duration: 2.5, ease: 'easeInOut' }}
-                />
-              </div>
+            {/*
+              3 pieces that tile into a perfect 4×3 rectangle (no gaps, no overlaps):
+                Row 0: I I I I
+                Row 1: L J J J
+                Row 2: L L L J
+              Cell = 20px, gap = 3px → step = 23px
+              Container = 89 × 66px
+            */}
+            <div style={{ position: 'relative', width: 89, height: 66 }}>
+
+              {/* I-piece (cyan) — flies in from top */}
+              <motion.div
+                style={{ position: 'absolute', top: 0, left: 0 }}
+                animate={{ y: [-80, 0, 0, -80] }}
+                transition={{ duration: 2.4, times: [0, 0.35, 0.65, 1], repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <div style={{ display: 'flex', gap: 3 }}>
+                  {[0, 1, 2, 3].map(c => (
+                    <div key={c} style={{ width: 20, height: 20, backgroundColor: '#22D3EE', boxShadow: 'inset 3px 3px 0 rgba(255,255,255,0.45), inset -3px -3px 0 rgba(0,0,0,0.3)' }} />
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* L-piece (orange) — flies in from bottom-left */}
+              <motion.div
+                style={{ position: 'absolute', top: 23, left: 0, display: 'flex', flexDirection: 'column', gap: 3 }}
+                animate={{ x: [-70, 0, 0, -70], y: [55, 0, 0, 55] }}
+                transition={{ duration: 2.4, times: [0, 0.35, 0.65, 1], repeat: Infinity, ease: 'easeInOut' }}
+              >
+                {[[1, 0, 0], [1, 1, 1]].map((row, r) => (
+                  <div key={r} style={{ display: 'flex', gap: 3 }}>
+                    {row.map((cell, c) => (
+                      <div key={c} style={{ width: 20, height: 20, backgroundColor: cell ? '#22D3EE' : 'transparent', boxShadow: cell ? 'inset 3px 3px 0 rgba(255,255,255,0.45), inset -3px -3px 0 rgba(0,0,0,0.3)' : 'none' }} />
+                    ))}
+                  </div>
+                ))}
+              </motion.div>
+
+              {/* J-piece (blue) — flies in from bottom-right */}
+              <motion.div
+                style={{ position: 'absolute', top: 23, left: 23, display: 'flex', flexDirection: 'column', gap: 3 }}
+                animate={{ x: [70, 0, 0, 70], y: [55, 0, 0, 55] }}
+                transition={{ duration: 2.4, times: [0, 0.35, 0.65, 1], repeat: Infinity, ease: 'easeInOut' }}
+              >
+                {[[1, 1, 1], [0, 0, 1]].map((row, r) => (
+                  <div key={r} style={{ display: 'flex', gap: 3 }}>
+                    {row.map((cell, c) => (
+                      <div key={c} style={{ width: 20, height: 20, backgroundColor: cell ? '#22D3EE' : 'transparent', boxShadow: cell ? 'inset 3px 3px 0 rgba(255,255,255,0.45), inset -3px -3px 0 rgba(0,0,0,0.3)' : 'none' }} />
+                    ))}
+                  </div>
+                ))}
+              </motion.div>
+
             </div>
           </motion.div>
         )}
@@ -760,7 +865,7 @@ export default function Home() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5, ease: EASE_OUT }}
             className="fixed top-0 left-0 right-0 z-[110] flex items-center justify-between"
-            style={{ padding: '1.5rem 2rem' }}
+            style={{ padding: 'clamp(0.875rem, 2vh, 1.5rem) clamp(1rem, 2.5vw, 2rem)' }}
           >
             <a
               href="#"
@@ -808,7 +913,7 @@ export default function Home() {
                 className="nav-link text-white"
                 onClick={(e) => {
                   e.preventDefault();
-                  goStation(5);
+                  goStation(6);
                 }}
               >
                 how we work
@@ -827,10 +932,9 @@ export default function Home() {
                 href="#"
                 className="button"
                 style={{ minHeight: '2.75rem', fontSize: '0.875rem' }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  goStation(7);
-                }}
+                data-cal-namespace="discovery-call"
+                data-cal-link="harshil-tetris/discovery-call"
+                data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
               >
                 book a strategy call
               </a>
@@ -890,7 +994,7 @@ export default function Home() {
                 transition={{ delay: 0.35, duration: 0.7, ease: EASE_OUT }}
                 style={{
                   color: 'white',
-                  maxWidth: 'min(50vw, 100%)',
+                  maxWidth: 'min(42rem, 100%)',
                   fontSize: 'clamp(2rem, 4.5vw, 5rem)',
                   fontWeight: 700,
                   lineHeight: 1.05,
@@ -911,7 +1015,7 @@ export default function Home() {
                 transition={{ delay: 0.5, duration: 0.6, ease: EASE_OUT }}
                 style={{
                   color: 'rgba(255,255,255,0.75)',
-                  maxWidth: 'min(50vw, 100%)',
+                  maxWidth: 'min(42rem, 100%)',
                   fontSize: 'clamp(1rem, 1.8vw, 1.5rem)',
                   lineHeight: 1.6,
                   marginBottom: 'clamp(1.5rem, 4vh, 4rem)',
@@ -931,13 +1035,15 @@ export default function Home() {
                 style={{ gap: 'clamp(0.75rem, 1.5vw, 1.25rem)', marginBottom: 'clamp(2.5rem, 5vh, 5rem)' }}
               >
                 <button
-                  onClick={() => goStation(7)}
                   className="button"
                   style={{
                     fontSize: 'clamp(0.875rem, 1.1vw, 1.125rem)',
                     minHeight: 'clamp(3rem, 4vw, 3.75rem)',
                     padding: '0 clamp(1.5rem, 2.5vw, 2.25rem)',
                   }}
+                  data-cal-namespace="discovery-call"
+                  data-cal-link="harshil-tetris/discovery-call"
+                  data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
                 >
                   book a strategy call
                 </button>
@@ -1045,7 +1151,7 @@ export default function Home() {
 
       {/* ═══ STATIONS ═══ */}
       <AnimatePresence mode="wait">
-        {!loading && !heroVisible && station >= 1 && station <= 7 && (
+        {!loading && !heroVisible && station >= 1 && station <= 8 && (
           <motion.div
             key={`station-${station}`}
             initial={{ opacity: 0 }}
@@ -1059,7 +1165,7 @@ export default function Home() {
             <div
               className="w-full md:w-auto md:max-w-[50vw] flex flex-col gap-5 md:gap-8 hide-scrollbar"
               style={{
-                padding: 'clamp(4rem, 8vh, 5rem) clamp(1rem, 3vw, 2rem) clamp(5rem, 10vh, 3rem) clamp(1.25rem, 4vw, 4rem)',
+                padding: 'clamp(3.5rem, 8vh, 5rem) clamp(1rem, 3vw, 2rem) clamp(3rem, 8vh, 5rem) clamp(1rem, 4vw, 4rem)',
                 maxHeight: '100vh',
                 overflowY: 'auto',
               }}
@@ -1168,7 +1274,7 @@ export default function Home() {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="grid grid-cols-2 gap-2"
+                    className="grid grid-cols-1 sm:grid-cols-2 gap-2"
                   >
                     {BUILD_CATEGORIES.map((cat, i) => {
                       const isActive = activeBuild === i;
@@ -1451,183 +1557,208 @@ export default function Home() {
                     </p>
                   </motion.div>
 
-                  {/* Featured case study — Up Top */}
-                  <motion.div
-                    custom={1}
-                    variants={boxVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="station-card"
-                    style={{ overflow: 'hidden' }}
-                  >
-                    {/* Badge + header */}
-                    <div
-                      style={{
-                        padding: '1.75rem 1.5rem 0',
-                      }}
+                  {/* Featured case study carousel */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                    <motion.div
+                      custom={1}
+                      variants={boxVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      className="station-card"
+                      style={{ overflow: 'hidden', flex: 1 }}
                     >
-                      <span
-                        style={{
-                          fontFamily: "'DM Mono', monospace",
-                          textTransform: 'lowercase',
-                          fontSize: '0.75rem',
-                          color: '#22D3EE',
-                          background: 'rgba(34,211,238,0.15)',
-                          padding: '0.375rem 0.75rem',
-                          borderRadius: '0.25rem',
-                          letterSpacing: '0.02em',
-                          display: 'inline-block',
-                        }}
-                      >
-                        featured case study
-                      </span>
-                    </div>
-
-                    {/* Stat highlights */}
-                    <div
-                      className="grid grid-cols-3 gap-px"
-                      style={{
-                        margin: '1.25rem 1.5rem',
-                        borderRadius: '0.25rem',
-                        overflow: 'hidden',
-                        background: 'rgba(255,255,255,0.08)',
-                      }}
-                    >
-                      {[
-                        { value: '$3M+', label: 'revenue' },
-                        { value: '400+', label: 'clients' },
-                        { value: '0', label: 'headcount added' },
-                      ].map((stat, i) => (
-                        <div
-                          key={i}
-                          className="flex flex-col items-center text-center"
+                      {/* Badge */}
+                      <div style={{ padding: '1.75rem 1.5rem 0' }}>
+                        <span
                           style={{
-                            padding: '1.25rem 0.75rem',
-                            background: 'rgba(255,255,255,0.03)',
+                            fontFamily: "'DM Mono', monospace",
+                            textTransform: 'lowercase',
+                            fontSize: '0.75rem',
+                            color: '#22D3EE',
+                            background: 'rgba(34,211,238,0.15)',
+                            padding: '0.375rem 0.75rem',
+                            borderRadius: '0.25rem',
+                            letterSpacing: '0.02em',
+                            display: 'inline-block',
                           }}
                         >
-                          <span
-                            className="font-bold"
-                            style={{
-                              fontFamily: "'Inter', sans-serif",
-                              fontSize: '1.5rem',
-                              color: '#22D3EE',
-                              lineHeight: 1.1,
-                              letterSpacing: '-0.02em',
-                            }}
-                          >
-                            {stat.value}
-                          </span>
-                          <span
-                            style={{
-                              fontFamily: "'DM Mono', monospace",
-                              textTransform: 'lowercase',
-                              fontSize: '0.6875rem',
-                              color: 'rgba(255,255,255,0.45)',
-                              marginTop: '0.375rem',
-                              letterSpacing: '0.02em',
-                            }}
-                          >
-                            {stat.label}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Description */}
-                    <div style={{ padding: '0 1.5rem 1.5rem' }}>
-                      <h3
-                        className="font-semibold mb-3"
-                        style={{
-                          fontFamily: "'Inter', sans-serif",
-                          fontSize: '1.125rem',
-                          color: 'white',
-                          lineHeight: '140%',
-                        }}
-                      >
-                        Systems that helped Up Top scale without adding headcount
-                      </h3>
-                      <p
-                        style={{
-                          fontSize: '0.9375rem',
-                          lineHeight: '170%',
-                          color: 'rgba(255,255,255,0.55)',
-                          marginBottom: '1.25rem',
-                        }}
-                      >
-                        What we built: Automated talent pipeline, client tracking
-                        system, custom ATS, cross-tool workflow integrations, and
-                        an onboarding engine that scaled without adding headcount.
-                      </p>
-                      {/* Deliverables list */}
-                      <div className="flex flex-wrap gap-2">
-                        {['Talent Pipeline', 'Custom ATS', 'Client CRM', 'Workflow Automations', 'Onboarding Engine'].map((tag) => (
-                          <span
-                            key={tag}
-                            style={{
-                              fontFamily: "'DM Mono', monospace",
-                              textTransform: 'lowercase',
-                              fontSize: '0.6875rem',
-                              color: 'rgba(255,255,255,0.5)',
-                              border: '1px solid rgba(255,255,255,0.12)',
-                              padding: '0.375rem 0.75rem',
-                              borderRadius: '0.25rem',
-                              letterSpacing: '0.02em',
-                            }}
-                          >
-                            {tag}
-                          </span>
-                        ))}
+                          featured case study
+                        </span>
                       </div>
+
+                      {/* Animated card content — slides up/down */}
+                      <AnimatePresence mode="wait" custom={caseStudyDir}>
+                        <motion.div
+                          key={activeCaseStudy}
+                          custom={caseStudyDir}
+                          variants={{
+                            hidden: (dir: number) => ({ opacity: 0, y: dir * 40 }),
+                            visible: { opacity: 1, y: 0 },
+                            exit: (dir: number) => ({ opacity: 0, y: dir * -40 }),
+                          }}
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit"
+                          transition={{ duration: 0.3, ease: EASE_OUT }}
+                        >
+                          {/* Stat highlights */}
+                          <div
+                            className="grid grid-cols-3 gap-px"
+                            style={{
+                              margin: '1.25rem 1.5rem',
+                              borderRadius: '0.25rem',
+                              overflow: 'hidden',
+                              background: 'rgba(255,255,255,0.08)',
+                            }}
+                          >
+                            {CASE_STUDIES[activeCaseStudy].stats.map((stat, i) => (
+                              <div
+                                key={i}
+                                className="flex flex-col items-center text-center"
+                                style={{
+                                  padding: '1.25rem 0.75rem',
+                                  background: 'rgba(255,255,255,0.03)',
+                                }}
+                              >
+                                <span
+                                  className="font-bold"
+                                  style={{
+                                    fontFamily: "'Inter', sans-serif",
+                                    fontSize: '1.5rem',
+                                    color: '#22D3EE',
+                                    lineHeight: 1.1,
+                                    letterSpacing: '-0.02em',
+                                  }}
+                                >
+                                  {stat.value}
+                                </span>
+                                <span
+                                  style={{
+                                    fontFamily: "'DM Mono', monospace",
+                                    textTransform: 'lowercase',
+                                    fontSize: '0.6875rem',
+                                    color: 'rgba(255,255,255,0.45)',
+                                    marginTop: '0.375rem',
+                                    letterSpacing: '0.02em',
+                                  }}
+                                >
+                                  {stat.label}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Description */}
+                          <div style={{ padding: '0 1.5rem 1.5rem' }}>
+                            <h3
+                              className="font-semibold mb-3"
+                              style={{
+                                fontFamily: "'Inter', sans-serif",
+                                fontSize: '1.125rem',
+                                color: 'white',
+                                lineHeight: '140%',
+                              }}
+                            >
+                              {CASE_STUDIES[activeCaseStudy].title}
+                            </h3>
+                            <p
+                              style={{
+                                fontSize: '0.9375rem',
+                                lineHeight: '170%',
+                                color: 'rgba(255,255,255,0.55)',
+                                marginBottom: '1.25rem',
+                              }}
+                            >
+                              {CASE_STUDIES[activeCaseStudy].description}
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {CASE_STUDIES[activeCaseStudy].tags.map((tag) => (
+                                <span
+                                  key={tag}
+                                  style={{
+                                    fontFamily: "'DM Mono', monospace",
+                                    textTransform: 'lowercase',
+                                    fontSize: '0.6875rem',
+                                    color: 'rgba(255,255,255,0.5)',
+                                    border: '1px solid rgba(255,255,255,0.12)',
+                                    padding: '0.375rem 0.75rem',
+                                    borderRadius: '0.25rem',
+                                    letterSpacing: '0.02em',
+                                  }}
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </motion.div>
+                      </AnimatePresence>
+
+                      {/* CTA — fixed at bottom */}
+                      <a
+                        href="#"
+                        className="button w-full"
+                        style={{ borderRadius: 0, margin: 0, borderLeft: 0, borderRight: 0, borderBottom: 0 }}
+                      >
+                        read case study
+                      </a>
+                    </motion.div>
+
+                    {/* ── Arrow buttons outside card ── */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <motion.button
+                        aria-label="Previous case study"
+                        onClick={() => {
+                          setCaseStudyDir(-1);
+                          setActiveCaseStudy(i => (i - 1 + CASE_STUDIES.length) % CASE_STUDIES.length);
+                        }}
+                        whileHover={{ backgroundColor: 'rgba(34,211,238,0.22)', borderColor: 'rgba(34,211,238,0.7)' }}
+                        style={{
+                          width: 32, height: 32,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          background: 'rgba(34,211,238,0.08)',
+                          border: '1px solid rgba(34,211,238,0.35)',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer',
+                          color: '#22D3EE',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M3 9L7 5L11 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </motion.button>
+                      <motion.button
+                        aria-label="Next case study"
+                        onClick={() => {
+                          setCaseStudyDir(1);
+                          setActiveCaseStudy(i => (i + 1) % CASE_STUDIES.length);
+                        }}
+                        whileHover={{ backgroundColor: 'rgba(34,211,238,0.22)', borderColor: 'rgba(34,211,238,0.7)' }}
+                        style={{
+                          width: 32, height: 32,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          background: 'rgba(34,211,238,0.08)',
+                          border: '1px solid rgba(34,211,238,0.35)',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer',
+                          color: '#22D3EE',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M3 5L7 9L11 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </motion.button>
                     </div>
+                  </div>
 
-                    {/* CTA */}
-                    <a
-                      href="#"
-                      className="button w-full"
-                      style={{
-                        borderRadius: 0,
-                        margin: 0,
-                        borderLeft: 0,
-                        borderRight: 0,
-                        borderBottom: 0,
-                      }}
-                    >
-                      read case study
-                    </a>
-                  </motion.div>
-
-                  {/* More case studies placeholder */}
-                  <motion.div
-                    custom={2}
-                    variants={boxVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="rounded"
-                    style={{
-                      borderRadius: '0.25rem',
-                      border: '1.5px dashed rgba(255,255,255,0.25)',
-                      padding: '1.25rem 1.5rem',
-                    }}
-                  >
-                    <p
-                      style={{
-                        fontFamily: "'DM Mono', monospace",
-                        textTransform: 'lowercase',
-                        color: 'rgba(255,255,255,0.5)',
-                        fontSize: '0.8125rem',
-                      }}
-                    >
-                      more case studies coming soon
-                    </p>
-                  </motion.div>
                 </>
               )}
 
-              {/* ── Station 5: How We Work — Vertical Timeline ── */}
-              {station === 5 && (
+              {/* ── Station 6: How We Work — Vertical Timeline ── */}
+              {station === 6 && (
                 <>
                   <motion.div
                     custom={0}
@@ -1649,7 +1780,7 @@ export default function Home() {
                     >
                       <ScrambleText
                         text="The Ops Blueprint."
-                        active={station === 5}
+                        active={station === 6}
                       />
                     </h2>
                     <p className="body-text">
@@ -1672,7 +1803,7 @@ export default function Home() {
                   >
                     {/* Step tabs — top edge of card */}
                     <div
-                      className="grid grid-cols-4"
+                      className="grid grid-cols-2 md:grid-cols-4"
                       style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}
                     >
                       {PROCESS_STEPS.map((step, i) => {
@@ -1773,8 +1904,8 @@ export default function Home() {
                 </>
               )}
 
-              {/* ── Station 6: Our Edge ── */}
-              {station === 6 && (
+              {/* ── Station 7: Our Edge ── */}
+              {station === 7 && (
                 <>
                   <motion.div
                     custom={0}
@@ -1790,7 +1921,7 @@ export default function Home() {
                     <h2 className="heading h2">
                       <ScrambleText
                         text="We're not a traditional agency."
-                        active={station === 6}
+                        active={station === 7}
                       />
                     </h2>
                     <p className="body-text">
@@ -1877,7 +2008,7 @@ export default function Home() {
                     >
                       what this means for you:
                     </span>
-                    <div className="grid grid-cols-2 gap-2.5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                       {EDGE_ITEMS.map((item, i) => (
                         <div
                           key={i}
@@ -1916,8 +2047,8 @@ export default function Home() {
                 </>
               )}
 
-              {/* ── Station 7: Final CTA ── */}
-              {station === 7 && (
+              {/* ── Station 8: Final CTA ── */}
+              {station === 8 && (
                 <>
                   <motion.div
                     custom={0}
@@ -1930,7 +2061,7 @@ export default function Home() {
                     <h2 className="heading h2">
                       <ScrambleText
                         text="Ready to stop running your ops and start building your business?"
-                        active={station === 7}
+                        active={station === 8}
                       />
                     </h2>
                     <p className="body-text">
@@ -2014,6 +2145,9 @@ export default function Home() {
                           minHeight: '3.25rem',
                           width: '100%',
                         }}
+                        data-cal-namespace="discovery-call"
+                        data-cal-link="harshil-tetris/discovery-call"
+                        data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
                       >
                         book a strategy call
                       </a>
@@ -2079,6 +2213,171 @@ export default function Home() {
                   </motion.div>
                 </>
               )}
+
+              {/* ── Station 5: Testimonials ── */}
+              {station === 5 && (
+                <>
+                  {/* Testimonials carousel */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                    <motion.div
+                      custom={1}
+                      variants={boxVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      className="station-card"
+                      style={{ overflow: 'hidden', flex: 1 }}
+                    >
+                      {/* Badge */}
+                      <div style={{ padding: '1.75rem 1.5rem 0' }}>
+                        <span
+                          style={{
+                            fontFamily: "'DM Mono', monospace",
+                            textTransform: 'lowercase',
+                            fontSize: '0.75rem',
+                            color: '#22D3EE',
+                            background: 'rgba(34,211,238,0.15)',
+                            padding: '0.375rem 0.75rem',
+                            borderRadius: '0.25rem',
+                            letterSpacing: '0.02em',
+                            display: 'inline-block',
+                          }}
+                        >
+                          what clients say
+                        </span>
+                      </div>
+
+                      {/* Animated quote */}
+                      <AnimatePresence mode="wait" custom={testimonialDir}>
+                        <motion.div
+                          key={activeTestimonial}
+                          custom={testimonialDir}
+                          variants={{
+                            hidden: (dir: number) => ({ opacity: 0, y: dir * 40 }),
+                            visible: { opacity: 1, y: 0 },
+                            exit: (dir: number) => ({ opacity: 0, y: dir * -40 }),
+                          }}
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit"
+                          transition={{ duration: 0.3, ease: EASE_OUT }}
+                        >
+                          <div style={{ padding: '1.25rem 1.5rem 1.5rem' }}>
+                            <span
+                              style={{
+                                fontSize: '2.5rem',
+                                color: '#22D3EE',
+                                fontFamily: 'Georgia, serif',
+                                lineHeight: 1,
+                                display: 'block',
+                                marginBottom: '0.5rem',
+                              }}
+                            >
+                              &ldquo;
+                            </span>
+                            <p
+                              style={{
+                                fontSize: '0.9375rem',
+                                lineHeight: '170%',
+                                color: 'rgba(255,255,255,0.75)',
+                                marginBottom: '1.25rem',
+                              }}
+                            >
+                              {TESTIMONIALS[activeTestimonial].quote}
+                            </p>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                              <img
+                                src={TESTIMONIALS[activeTestimonial].photo}
+                                alt={TESTIMONIALS[activeTestimonial].name}
+                                style={{
+                                  width: 44,
+                                  height: 44,
+                                  borderRadius: '50%',
+                                  objectFit: 'cover',
+                                  flexShrink: 0,
+                                  border: '2px solid rgba(34,211,238,0.4)',
+                                }}
+                              />
+                              <div>
+                                <span
+                                  style={{
+                                    fontFamily: "'Inter', sans-serif",
+                                    fontWeight: 600,
+                                    fontSize: '0.875rem',
+                                    color: 'white',
+                                    display: 'block',
+                                  }}
+                                >
+                                  {TESTIMONIALS[activeTestimonial].name}
+                                </span>
+                                <span
+                                  style={{
+                                    fontFamily: "'DM Mono', monospace",
+                                    fontSize: '0.6875rem',
+                                    textTransform: 'lowercase',
+                                    color: 'rgba(255,255,255,0.4)',
+                                    letterSpacing: '0.02em',
+                                  }}
+                                >
+                                  {TESTIMONIALS[activeTestimonial].title}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      </AnimatePresence>
+                    </motion.div>
+
+                    {/* Outside arrow buttons */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <motion.button
+                        aria-label="Previous testimonial"
+                        onClick={() => {
+                          setTestimonialDir(-1);
+                          setActiveTestimonial(i => (i - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
+                        }}
+                        whileHover={{ backgroundColor: 'rgba(34,211,238,0.22)', borderColor: 'rgba(34,211,238,0.7)' }}
+                        style={{
+                          width: 32, height: 32,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          background: 'rgba(34,211,238,0.08)',
+                          border: '1px solid rgba(34,211,238,0.35)',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer',
+                          color: '#22D3EE',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M3 9L7 5L11 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </motion.button>
+                      <motion.button
+                        aria-label="Next testimonial"
+                        onClick={() => {
+                          setTestimonialDir(1);
+                          setActiveTestimonial(i => (i + 1) % TESTIMONIALS.length);
+                        }}
+                        whileHover={{ backgroundColor: 'rgba(34,211,238,0.22)', borderColor: 'rgba(34,211,238,0.7)' }}
+                        style={{
+                          width: 32, height: 32,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          background: 'rgba(34,211,238,0.08)',
+                          border: '1px solid rgba(34,211,238,0.35)',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer',
+                          color: '#22D3EE',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M3 5L7 9L11 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </motion.button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Right side: large station number watermark */}
@@ -2104,7 +2403,7 @@ export default function Home() {
       </AnimatePresence>
 
       {/* ═══ STATION SELECTOR (bottom) ═══ */}
-      {!loading && !heroVisible && station >= 1 && station <= 7 && (
+      {!loading && !heroVisible && station >= 1 && station <= 8 && (
         <div className="fixed bottom-4 right-4 z-[120]">
           <AnimatePresence>
             {selectorOpen && (
@@ -2113,21 +2412,22 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
                 transition={{ duration: 0.3, ease: EASE_OUT }}
-                className="mb-2 flex flex-col gap-1"
+                className="mb-2 flex flex-col gap-2"
               >
                 {STATIONS_META.map((label, i) => (
                   <button
                     key={i}
                     onClick={() => goStation(i + 1)}
-                    className="flex items-center gap-3 px-4 py-2 rounded text-left text-sm transition-all"
+                    className="flex items-center gap-3 text-left text-sm transition-all"
                     style={{
                       border: '1px dashed white',
                       borderRadius: '0.25rem',
-                      background:
-                        station === i + 1 ? 'white' : 'transparent',
+                      padding: '0.5rem 0.875rem',
+                      background: station === i + 1 ? 'white' : 'transparent',
                       color: station === i + 1 ? '#1A0B2E' : 'white',
                       fontFamily: "'DM Mono', monospace",
                       textTransform: 'lowercase',
+                      cursor: 'pointer',
                     }}
                   >
                     <span
@@ -2149,22 +2449,23 @@ export default function Home() {
 
           <button
             onClick={() => setSelectorOpen(!selectorOpen)}
-            className="flex items-center gap-3 px-5 py-3 rounded"
+            className="flex items-center gap-3 text-left text-sm"
             style={{
-              border: '1.5px solid white',
+              border: '1px dashed white',
               borderRadius: '0.25rem',
-              background: 'rgba(124,58,237,0.9)',
-              backdropFilter: 'blur(10px)',
+              padding: '0.5rem 0.875rem',
+              background: 'transparent',
+              color: 'white',
               fontFamily: "'DM Mono', monospace",
               textTransform: 'lowercase',
-              color: 'white',
-              fontSize: '0.875rem',
+              cursor: 'pointer',
             }}
           >
             <span
-              className="w-6 h-6 rounded-sm flex items-center justify-center text-xs"
+              className="w-5 h-5 rounded-sm flex items-center justify-center text-[10px]"
               style={{
                 border: '1px solid rgba(255,255,255,0.4)',
+                flexShrink: 0,
                 fontFamily: "'DM Mono', monospace",
               }}
             >
@@ -2251,6 +2552,9 @@ export default function Home() {
                     href="#"
                     className="button"
                     style={{ fontSize: '1rem', minHeight: '3.25rem', padding: '0 2rem' }}
+                    data-cal-namespace="discovery-call"
+                    data-cal-link="harshil-tetris/discovery-call"
+                    data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
                   >
                     book a strategy call
                   </a>
