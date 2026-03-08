@@ -644,6 +644,9 @@ a {
   display: flex;
   flex-direction: column;
   gap: 0.875rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .station-list-item {
@@ -656,12 +659,11 @@ a {
 }
 
 .station-list-item .bullet {
-  margin-top: 0.5rem;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--color-secondary);
+  margin-top: 0.2rem;
   flex-shrink: 0;
+  color: var(--color-secondary);
+  width: 14px;
+  height: 14px;
 }
 
 /* ===== EDGE ITEMS ===== */

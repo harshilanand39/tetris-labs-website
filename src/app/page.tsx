@@ -798,14 +798,6 @@ export default function Home() {
             className="fixed inset-0 z-[10000] flex items-center justify-center"
             style={{ background: '#7C3AED' }}
           >
-            {/*
-              3 pieces that tile into a perfect 4×3 rectangle (no gaps, no overlaps):
-                Row 0: I I I I
-                Row 1: L J J J
-                Row 2: L L L J
-              Cell = 20px, gap = 3px → step = 23px
-              Container = 89 × 66px
-            */}
             <div style={{ position: 'relative', width: 89, height: 66 }}>
 
               {/* I-piece (cyan) — flies in from top */}
@@ -821,7 +813,7 @@ export default function Home() {
                 </div>
               </motion.div>
 
-              {/* L-piece (orange) — flies in from bottom-left */}
+              {/* L-piece — flies in from bottom-left */}
               <motion.div
                 style={{ position: 'absolute', top: 23, left: 0, display: 'flex', flexDirection: 'column', gap: 3 }}
                 animate={{ x: [-70, 0, 0, -70], y: [55, 0, 0, 55] }}
@@ -836,7 +828,7 @@ export default function Home() {
                 ))}
               </motion.div>
 
-              {/* J-piece (blue) — flies in from bottom-right */}
+              {/* J-piece — flies in from bottom-right */}
               <motion.div
                 style={{ position: 'absolute', top: 23, left: 23, display: 'flex', flexDirection: 'column', gap: 3 }}
                 animate={{ x: [70, 0, 0, 70], y: [55, 0, 0, 55] }}
@@ -994,7 +986,7 @@ export default function Home() {
                 transition={{ delay: 0.35, duration: 0.7, ease: EASE_OUT }}
                 style={{
                   color: 'white',
-                  maxWidth: 'min(42rem, 100%)',
+                  maxWidth: 'min(72rem, 100%)',
                   fontSize: 'clamp(2rem, 4.5vw, 5rem)',
                   fontWeight: 700,
                   lineHeight: 1.05,
@@ -1002,9 +994,9 @@ export default function Home() {
                   marginBottom: 'clamp(1.5rem, 3vh, 3rem)',
                 }}
               >
-                Turn how your team works into{' '}
+                We build AI-powered systems that let great teams{' '}
                 <span style={{ color: '#22D3EE' }}>
-                  <ScrambleText text="AI-powered systems." active={heroVisible} />
+                  <ScrambleText text="scale." active={heroVisible} />
                 </span>
               </motion.h1>
 
@@ -1015,7 +1007,7 @@ export default function Home() {
                 transition={{ delay: 0.5, duration: 0.6, ease: EASE_OUT }}
                 style={{
                   color: 'rgba(255,255,255,0.75)',
-                  maxWidth: 'min(42rem, 100%)',
+                  maxWidth: 'min(72rem, 100%)',
                   fontSize: 'clamp(1rem, 1.8vw, 1.5rem)',
                   lineHeight: 1.6,
                   marginBottom: 'clamp(1.5rem, 4vh, 4rem)',
@@ -1141,7 +1133,7 @@ export default function Home() {
                     borderTop: '1.5px solid rgba(255,255,255,0.3)',
                   }}
                 >
-                  start exploring
+                  learn more
                 </button>
               </div>
             </motion.div>
@@ -1363,7 +1355,7 @@ export default function Home() {
                           <ul className="station-list">
                             {BUILD_CATEGORIES[activeBuild].items.map((item, idx) => (
                               <li key={idx} className="station-list-item">
-                                <span className="bullet" />
+                                <svg className="bullet" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M8 3l4 4-4 4" stroke="#22D3EE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                                 {item}
                               </li>
                             ))}
@@ -1519,7 +1511,7 @@ export default function Home() {
                           <ul className="station-list">
                             {AUDIENCES[activeAudience].items.map((item, idx) => (
                               <li key={idx} className="station-list-item">
-                                <span className="bullet" />
+                                <svg className="bullet" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M8 3l4 4-4 4" stroke="#22D3EE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                                 {item}
                               </li>
                             ))}
@@ -1893,7 +1885,7 @@ export default function Home() {
                         <ul className="station-list">
                           {PROCESS_STEPS[activeStep].items.map((item, idx) => (
                             <li key={idx} className="station-list-item">
-                              <span className="bullet" />
+                              <svg className="bullet" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M8 3l4 4-4 4" stroke="#22D3EE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                               {item}
                             </li>
                           ))}
@@ -2537,7 +2529,7 @@ export default function Home() {
                       fontSize: '1rem',
                     }}
                   >
-                    turn how your team works into ai-powered systems
+                    We build AI-powered systems that let great teams scale
                   </p>
                 </motion.div>
 
