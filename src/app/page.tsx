@@ -18,7 +18,15 @@ const STATIONS_META = [
   'our edge',
 ];
 
-const TRUST_PARTNERS = ['Up Top', 'Woodstock', 'Corn'];
+const TRUST_PARTNERS = [
+  { name: 'Caladan', src: '/images/clients/Caladan Logo@4x.png' },
+  { name: 'Corn', src: '/images/clients/corn_logo.png' },
+  { name: 'Crypto Coach', src: '/images/clients/Crypto Coach Brand Assets (10)@4x.png' },
+  { name: 'Crypto Coach', src: '/images/clients/Crypto Coach Brand Assets (9)@4x.png' },
+  { name: 'Crypto Coach', src: '/images/clients/Crypto Coach Chaos to Clarity@4x.png' },
+  { name: 'Eclipse', src: '/images/clients/Eclipse Logo Lockup@4x.png' },
+  { name: 'Woodstock', src: '/images/clients/Woodstock Fund Logo@4x.png' },
+];
 
 const CASE_STUDIES = [
   {
@@ -624,6 +632,14 @@ export default function Home() {
     })();
   }, []);
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   const [loading, setLoading] = useState(true);
   const [heroVisible, setHeroVisible] = useState(true);
   const [station, setStation] = useState(0);
@@ -699,6 +715,7 @@ export default function Home() {
   const lastScrollTime = useRef(0);
   const stationRef = useRef(0);
   const navLocked = useRef(false);
+  const stationScrollRef = useRef<HTMLDivElement>(null);
 
   /* preloader */
   useEffect(() => {
@@ -773,7 +790,21 @@ export default function Home() {
     const ts = (e: TouchEvent) => { ty = e.touches[0].clientY; };
     const te = (e: TouchEvent) => {
       const d = ty - e.changedTouches[0].clientY;
-      if (Math.abs(d) > 50) navigate(d > 0 ? 1 : -1);
+      if (Math.abs(d) < 50) return;
+
+      // On mobile, check if the station scroll container can still scroll
+      const isMobileNow = window.innerWidth < 768;
+      if (isMobileNow && stationScrollRef.current) {
+        const el = stationScrollRef.current;
+        const atTop = el.scrollTop <= 5;
+        const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 5;
+        // Swiping up (want next station) — only navigate if at bottom
+        if (d > 0 && !atBottom) return;
+        // Swiping down (want prev station) — only navigate if at top
+        if (d < 0 && !atTop) return;
+      }
+
+      navigate(d > 0 ? 1 : -1);
     };
 
     window.addEventListener('wheel', wheel, { passive: false, capture: true });
@@ -892,7 +923,10 @@ export default function Home() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5, ease: EASE_OUT }}
             className="fixed top-0 left-0 right-0 z-[110] flex items-center justify-between"
-            style={{ padding: 'clamp(0.875rem, 2vh, 1.5rem) clamp(1rem, 2.5vw, 2rem)' }}
+            style={{
+              padding: 'clamp(1rem, 2vh, 1.5rem) clamp(1.25rem, 2.5vw, 2rem)',
+              ...(isMobile ? { background: '#7C3AED', borderBottom: '1px solid rgba(255,255,255,0.1)' } : {}),
+            }}
           >
             <a
               href="#"
@@ -914,6 +948,86 @@ export default function Home() {
                 Tetris Labs
               </span>
             </a>
+            {/* Mobile: station selector in nav */}
+            {isMobile && (
+              <div className="relative">
+                <button
+                  onClick={() => setSelectorOpen(!selectorOpen)}
+                  className="flex items-center gap-2 text-left text-sm"
+                  style={{
+                    border: '1px dashed white',
+                    borderRadius: '0.25rem',
+                    padding: '0.375rem 0.625rem',
+                    background: 'transparent',
+                    color: 'white',
+                    fontFamily: "'DM Mono', monospace",
+                    textTransform: 'lowercase',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <span
+                    className="w-5 h-5 rounded-sm flex items-center justify-center text-[10px]"
+                    style={{
+                      border: '1px solid rgba(255,255,255,0.4)',
+                      flexShrink: 0,
+                      fontFamily: "'DM Mono', monospace",
+                    }}
+                  >
+                    {String(station).padStart(2, '0')}
+                  </span>
+                  <span>{STATIONS_META[station - 1]}</span>
+                  <svg
+                    width="12" height="12" viewBox="0 0 16 16" fill="none"
+                    style={{ transform: selectorOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.3s' }}
+                  >
+                    <path d="M3 5L8 10L13 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <AnimatePresence>
+                  {selectorOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3, ease: EASE_OUT }}
+                      className="absolute right-0 flex flex-col gap-2"
+                      style={{ top: '100%', marginTop: '0.5rem', zIndex: 130 }}
+                    >
+                      {STATIONS_META.map((label, i) => (
+                        <button
+                          key={i}
+                          onClick={() => goStation(i + 1)}
+                          className="flex items-center gap-3 text-left text-sm transition-all"
+                          style={{
+                            border: '1px dashed white',
+                            borderRadius: '0.25rem',
+                            padding: '0.5rem 0.875rem',
+                            background: station === i + 1 ? 'white' : '#7C3AED',
+                            color: station === i + 1 ? '#1A0B2E' : 'white',
+                            fontFamily: "'DM Mono', monospace",
+                            textTransform: 'lowercase',
+                            cursor: 'pointer',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          <span
+                            className="w-5 h-5 rounded-sm flex items-center justify-center text-[10px]"
+                            style={{
+                              border: `1px solid ${station === i + 1 ? '#1A0B2E' : 'rgba(255,255,255,0.4)'}`,
+                              flexShrink: 0,
+                              fontFamily: "'DM Mono', monospace",
+                            }}
+                          >
+                            {String(i + 1).padStart(2, '0')}
+                          </span>
+                          {label}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
             <div className="hidden md:flex items-center gap-6">
               <a
                 href="#"
@@ -951,7 +1065,7 @@ export default function Home() {
             style={{ padding: '0.75rem' }}
           >
             {/* left: hero content */}
-            <div className="flex-1 flex flex-col justify-center" style={{ padding: 'clamp(2rem, 4vh, 4rem) clamp(1.25rem, 4vw, 4rem) clamp(2rem, 4vh, 4rem) clamp(1.25rem, 5vw, 5vw)' }}>
+            <div className="flex-1 flex flex-col justify-center" style={{ padding: 'clamp(2rem, 4vh, 4rem) clamp(1.25rem, 4vw, 4rem) clamp(2rem, 4vh, 4rem) clamp(1.25rem, 5vw, 5vw)', minWidth: 0, overflow: 'hidden' }}>
               {/* status badge */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -1011,75 +1125,87 @@ export default function Home() {
                 your team can focus on what actually moves the needle.
               </motion.p>
 
-              {/* CTAs */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.65, duration: 0.6, ease: EASE_OUT }}
-                className="flex flex-wrap"
-                style={{ gap: 'clamp(0.75rem, 1.5vw, 1.25rem)', marginBottom: 'clamp(2.5rem, 5vh, 5rem)' }}
-              >
-                <button
-                  className="button"
-                  style={{
-                    fontSize: 'clamp(0.875rem, 1.1vw, 1.125rem)',
-                    minHeight: 'clamp(3rem, 4vw, 3.75rem)',
-                    padding: '0 clamp(1.5rem, 2.5vw, 2.25rem)',
-                  }}
-                  data-cal-namespace="discovery-call"
-                  data-cal-link="harshil-tetris/discovery-call"
-                  data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
+              {/* CTAs + trust — share the same inline width */}
+              <div style={{ display: 'inline-flex', flexDirection: 'column', gap: 0 }}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.65, duration: 0.6, ease: EASE_OUT }}
+                  className="flex flex-nowrap"
+                  style={{ gap: 'clamp(0.5rem, 1.5vw, 1.25rem)', marginBottom: 'clamp(2.5rem, 5vh, 5rem)' }}
                 >
-                  book a strategy call
-                </button>
-                <button
-                  onClick={() => goStation(4)}
-                  className="button"
-                  style={{
-                    fontSize: 'clamp(0.875rem, 1.1vw, 1.125rem)',
-                    minHeight: 'clamp(3rem, 4vw, 3.75rem)',
-                    padding: '0 clamp(1.5rem, 2.5vw, 2.25rem)',
-                    background: 'transparent',
-                    color: 'white',
-                    borderColor: 'white',
-                  }}
-                >
-                  see our work
-                </button>
-              </motion.div>
+                  <button
+                    className="button"
+                    style={{
+                      fontSize: 'clamp(0.75rem, 1.1vw, 1.125rem)',
+                      minHeight: 'clamp(2.75rem, 4vw, 3.75rem)',
+                      padding: '0 clamp(1rem, 2.5vw, 2.25rem)',
+                      whiteSpace: 'nowrap',
+                    }}
+                    data-cal-namespace="discovery-call"
+                    data-cal-link="harshil-tetris/discovery-call"
+                    data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
+                  >
+                    book a strategy call
+                  </button>
+                  <button
+                    onClick={() => goStation(4)}
+                    className="button"
+                    style={{
+                      fontSize: 'clamp(0.75rem, 1.1vw, 1.125rem)',
+                      minHeight: 'clamp(2.75rem, 4vw, 3.75rem)',
+                      padding: '0 clamp(1rem, 2.5vw, 2.25rem)',
+                      background: 'transparent',
+                      color: 'white',
+                      borderColor: 'white',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    see our work
+                  </button>
+                </motion.div>
 
-              {/* trust line */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.9, duration: 0.8 }}
-              >
-                <p
-                  style={{
-                    fontFamily: "'DM Mono', monospace",
-                    textTransform: 'lowercase',
-                    color: 'rgba(255,255,255,0.45)',
-                    fontSize: 'clamp(0.7rem, 0.9vw, 0.875rem)',
-                    marginBottom: '0.75rem',
-                  }}
+                {/* trust line */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.9, duration: 0.8 }}
+                  style={{ maxWidth: isMobile ? '100%' : '45%', paddingTop: '3rem' }}
                 >
-                  trusted by high-velocity teams who can&apos;t afford to slow down
-                </p>
-                <div className="flex items-center" style={{ gap: 'clamp(1.5rem, 2.5vw, 2.5rem)' }}>
-                  {TRUST_PARTNERS.map((p) => (
-                    <span
-                      key={p}
-                      className="font-semibold"
-                      style={{
-                        color: 'rgba(255,255,255,0.55)',
-                        fontSize: 'clamp(0.875rem, 1.1vw, 1.125rem)',
-                      }}
-                    >
-                      {p}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
+                  <p
+                    style={{
+                      fontFamily: "'DM Mono', monospace",
+                      textTransform: 'lowercase',
+                      color: 'rgba(255,255,255,0.45)',
+                      fontSize: 'clamp(0.7rem, 0.9vw, 0.875rem)',
+                      marginBottom: '0.75rem',
+                    }}
+                  >
+                    trusted by teams who can&apos;t afford to slow down
+                  </p>
+                  {/* Marquee logos — infinite seamless loop */}
+                  <div style={{ overflow: 'hidden', position: 'relative' }}>
+                    <div className="marquee-logos" style={{ alignItems: 'center', gap: '2.5rem', animationDuration: '20s', width: 'max-content' }}>
+                      {[...TRUST_PARTNERS, ...TRUST_PARTNERS].map((p, i) => (
+                        <img
+                          key={i}
+                          src={p.src}
+                          alt={p.name}
+                          style={{
+                            height: 'clamp(1rem, 1.75vw, 1.5rem)',
+                            width: 'auto',
+                            maxWidth: '120px',
+                            objectFit: 'contain',
+                            opacity: 0.55,
+                            filter: 'brightness(0) invert(1)',
+                            flexShrink: 0,
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
             </div>
 
             {/* right: station sidebar */}
@@ -1148,11 +1274,12 @@ export default function Home() {
           >
             {/* Station content */}
             <div
+              ref={stationScrollRef}
               className="w-full md:w-auto md:max-w-[50vw] flex flex-col gap-5 md:gap-8 hide-scrollbar"
               style={{
                 padding: 'clamp(3.5rem, 8vh, 5rem) clamp(1rem, 3vw, 2rem) clamp(3rem, 8vh, 5rem) clamp(1rem, 4vw, 4rem)',
                 maxHeight: '100vh',
-                overflowY: 'hidden',
+                overflowY: isMobile ? 'auto' : 'hidden',
               }}
             >
               {/* ── Station 1: Why Us / The Problem ── */}
@@ -1170,7 +1297,7 @@ export default function Home() {
                       why us
                     </div>
                     <h2 className="heading h2">
-From Operational Chaos to Strategic Momentum
+                      From Operational Chaos to Strategic Momentum
                     </h2>
                     <p className="body-text">
                       We guide your shift from fighting daily ops fires to building
@@ -1237,7 +1364,7 @@ From Operational Chaos to Strategic Momentum
                       className="heading h2"
                       style={{ color: '#22D3EE' }}
                     >
-We encode your team into AI.
+                      We encode your team into AI.
                     </h2>
                     <p className="body-text">
                       We&apos;re product experts and AI architects who specialize
@@ -1378,7 +1505,7 @@ We encode your team into AI.
                       who we serve
                     </div>
                     <h2 className="heading h2">
-built for teams that move fast
+                      built for teams that move fast
                     </h2>
                     <p className="body-text">
                       Whether you&apos;re running a recruiting agency, a deal team,
@@ -1539,7 +1666,7 @@ built for teams that move fast
                       results
                     </div>
                     <h2 className="heading h2">
-Results that speak for themselves.
+                      Results that speak for themselves.
                     </h2>
                     <p className="body-text">
                       Three years. Dozens of teams. Here&apos;s what
@@ -1548,7 +1675,7 @@ Results that speak for themselves.
                   </motion.div>
 
                   {/* Featured case study carousel */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                  <div style={{ display: 'flex', alignItems: isMobile ? 'stretch' : 'center', gap: '0.625rem', flexDirection: isMobile ? 'column' : 'row' }}>
                     <motion.div
                       custom={1}
                       variants={boxVariants}
@@ -1705,7 +1832,7 @@ Results that speak for themselves.
                     </motion.div>
 
                     {/* ── Arrow buttons outside card ── */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', flexDirection: isMobile ? 'row' : 'column', gap: '0.5rem', justifyContent: isMobile ? 'center' : undefined }}>
                       <motion.button
                         aria-label="Previous case study"
                         onClick={() => {
@@ -1777,7 +1904,7 @@ Results that speak for themselves.
                       className="heading h2"
                       style={{ color: '#22D3EE' }}
                     >
-The Ops Blueprint.
+                      The Ops Blueprint.
                     </h2>
                     <p className="body-text">
                       Every engagement follows the same four-phase process.
@@ -1884,7 +2011,7 @@ The Ops Blueprint.
                         <ul className="station-list">
                           {PROCESS_STEPS[activeStep].items.map((item, idx) => (
                             <li key={idx} className="station-list-item">
-                              <svg className="bullet" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M8 3l4 4-4 4" stroke="#22D3EE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                              <svg className="bullet" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M8 3l4 4-4 4" stroke="#22D3EE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                               {item}
                             </li>
                           ))}
@@ -1910,7 +2037,7 @@ The Ops Blueprint.
                       our edge
                     </div>
                     <h2 className="heading h2">
-We&apos;re not a traditional agency.
+                      We&apos;re not a traditional agency.
                     </h2>
                     <p className="body-text">
                       And if you&apos;ve worked with one, you&apos;ll feel the
@@ -2040,7 +2167,7 @@ We&apos;re not a traditional agency.
               {station === 5 && (
                 <>
                   {/* Testimonials carousel */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                  <div style={{ display: 'flex', alignItems: isMobile ? 'stretch' : 'center', gap: '0.625rem', flexDirection: isMobile ? 'column' : 'row' }}>
                     <motion.div
                       custom={1}
                       variants={boxVariants}
@@ -2160,7 +2287,7 @@ We&apos;re not a traditional agency.
                     </motion.div>
 
                     {/* Outside arrow buttons */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', flexDirection: isMobile ? 'row' : 'column', gap: '0.5rem', justifyContent: isMobile ? 'center' : undefined }}>
                       <motion.button
                         aria-label="Previous testimonial"
                         onClick={() => {
@@ -2234,16 +2361,18 @@ We&apos;re not a traditional agency.
       </AnimatePresence>
 
       {/* ═══ STATION SELECTOR (bottom) ═══ */}
-      {!loading && !heroVisible && station >= 1 && station <= 7 && (
-        <div className="fixed bottom-4 right-4 z-[120]">
+      {!loading && !heroVisible && station >= 1 && station <= 7 && !isMobile && (
+        <div className="fixed z-[120]" style={{ right: '1rem', bottom: '1rem' }}>
+          {/* Dropdown menu — above button on desktop, below on mobile */}
           <AnimatePresence>
             {selectorOpen && (
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: isMobile ? -10 : 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
+                exit={{ opacity: 0, y: isMobile ? -10 : 10 }}
                 transition={{ duration: 0.3, ease: EASE_OUT }}
-                className="mb-2 flex flex-col gap-2"
+                className="flex flex-col gap-2"
+                style={isMobile ? { position: 'absolute', top: '100%', right: 0, marginTop: '0.5rem' } : { marginBottom: '0.5rem' }}
               >
                 {STATIONS_META.map((label, i) => (
                   <button
@@ -2259,6 +2388,7 @@ We&apos;re not a traditional agency.
                       fontFamily: "'DM Mono', monospace",
                       textTransform: 'lowercase',
                       cursor: 'pointer',
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     <span
@@ -2337,7 +2467,7 @@ We&apos;re not a traditional agency.
             className="fixed inset-0 z-[200] overflow-y-auto"
             style={{ background: '#7C3AED' }}
           >
-            <div className="h-screen flex flex-col items-center px-6 text-center">
+            <div className="min-h-screen flex flex-col items-center px-6 md:px-6 text-center" style={{ padding: isMobile ? '0 1.5rem' : undefined }}>
               {/* Central content — vertically centered, 3 groups */}
               <div className="flex-1 flex flex-col items-center justify-center" style={{ gap: '2.5rem' }}>
                 {/* Group 1: Title + Tagline */}
@@ -2389,19 +2519,6 @@ We&apos;re not a traditional agency.
                   >
                     book a strategy call
                   </a>
-                  <a
-                    href="#"
-                    className="button"
-                    style={{
-                      background: 'white',
-                      color: '#1A0B2E',
-                      fontSize: '0.875rem',
-                      minHeight: '3.25rem',
-                      padding: '0 2rem',
-                    }}
-                  >
-                    request a deck
-                  </a>
                 </motion.div>
 
                 {/* Group 3: Social Links */}
@@ -2411,7 +2528,7 @@ We&apos;re not a traditional agency.
                   transition={{ delay: 0.9, duration: 0.6 }}
                   className="flex gap-8"
                 >
-                  {['x', 'linkedin', 'telegram'].map((link) => (
+                  {['x', 'telegram'].map((link) => (
                     <a
                       key={link}
                       href="#"
@@ -2428,7 +2545,7 @@ We&apos;re not a traditional agency.
               </div>
 
               {/* Bottom bar — pinned to bottom */}
-              <div className="flex items-center justify-between w-full pb-6 pt-4" style={{ maxWidth: '32rem' }}>
+              <div className="flex items-center justify-between w-full pb-6 pt-4" style={{ maxWidth: isMobile ? '100%' : '32rem', padding: isMobile ? '1rem 0 1.5rem' : undefined }}>
                 <p
                   className="text-white/25 text-xs"
                   style={{ fontFamily: "'DM Mono', monospace" }}
