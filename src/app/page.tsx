@@ -16,13 +16,13 @@ const STATIONS_META = [
   'testimonials',
   'how we work',
   'our edge',
-  'get started',
 ];
 
 const TRUST_PARTNERS = ['Up Top', 'Woodstock', 'Corn'];
 
 const CASE_STUDIES = [
   {
+    slug: 'up-top',
     client: 'Up Top',
     stats: [
       { value: '$3M+', label: 'revenue' },
@@ -34,15 +34,28 @@ const CASE_STUDIES = [
     tags: ['Talent Pipeline', 'Custom ATS', 'Client CRM', 'Workflow Automations', 'Onboarding Engine'],
   },
   {
+    slug: 'unruly-capital',
+    client: 'Deep Tech VC',
+    stats: [
+      { value: '$50M', label: 'AUM' },
+      { value: '50+', label: 'portfolio cos.' },
+      { value: '11', label: 'workflows rebuilt' },
+    ],
+    title: "Rebuilding a VC's entire operating stack — from the inside out",
+    description: 'What we built: AI-powered deal sourcing, automated KYB/KYC closing, institutional knowledge RAG bot, unified portfolio data sync, and an end-to-end event management system.',
+    tags: ['Venture Capital', 'AI Agents', 'Deal Flow Automation', 'KYB/KYC', 'Portfolio Management'],
+  },
+  {
+    slug: 'caladan',
     client: 'Caladan',
     stats: [
-      { value: 'TBD', label: 'stat 1' },
-      { value: 'TBD', label: 'stat 2' },
-      { value: 'TBD', label: 'stat 3' },
+      { value: '$2B+', label: 'daily trading volume' },
+      { value: '9,500+', label: 'interactions structured' },
+      { value: '5hrs', label: 'weekly reporting saved' },
     ],
-    title: 'TBD — Caladan case study headline',
-    description: 'TBD — description of what was built for Caladan.',
-    tags: ['Tag 1', 'Tag 2', 'Tag 3'],
+    title: 'Turning 9,500+ fragmented interactions into one intelligent operating system.',
+    description: 'A crypto firm processing $2B+ in daily trading volume had a CRM no one wanted to use. 3,500+ company records, freeform meeting notes, disconnected tools — and a team flying blind on pipeline performance.',
+    tags: ['CRM & Data Infrastructure', 'Crypto Trading', 'Market Making', 'AI Automation'],
   },
 ];
 
@@ -155,13 +168,14 @@ const BUILD_CATEGORIES = [
 
 const AUDIENCES = [
   {
-    name: 'Fast-Moving Operators',
-    desc: "You\u2019re building something serious with a lean team. Everyone is in execution mode, and nobody has time to build the systems that would make execution easier. We do that part.",
+    name: 'Recruiting & Talent Teams',
+    desc: "You\u2019re placing candidates, managing clients, and tracking a hundred moving pieces at once — across spreadsheets, emails, and tools that don\u2019t talk to each other. We build the system that ties it all together.",
     items: [
-      'Automated coordination and status tracking across your team',
-      'Project and client management systems that scale with you',
-      'Weekly reporting that writes itself',
-      'Onboarding systems that work even when you\u2019re too busy to babysit them',
+      'Custom ATS with AI-powered candidate tracking and matching',
+      'Client pipeline CRM with automated updates and follow-ups',
+      'Automated candidate status communications',
+      'Billing and placement tracking dashboards',
+      'Onboarding flows for new consultants that encode your methodology',
     ],
   },
   {
@@ -175,24 +189,13 @@ const AUDIENCES = [
     ],
   },
   {
-    name: 'Recruiting & Talent Teams',
-    desc: "You\u2019re placing candidates, managing clients, and tracking a hundred moving pieces at once — across spreadsheets, emails, and tools that don\u2019t talk to each other. We build the system that ties it all together.",
+    name: 'Fast-Moving Operators',
+    desc: "You\u2019re building something serious with a lean team. Everyone is in execution mode, and nobody has time to build the systems that would make execution easier. We do that part.",
     items: [
-      'Custom ATS with AI-powered candidate tracking and matching',
-      'Client pipeline CRM with automated updates and follow-ups',
-      'Automated candidate status communications',
-      'Billing and placement tracking dashboards',
-      'Onboarding flows for new consultants that encode your methodology',
-    ],
-  },
-  {
-    name: 'BD & Growth Teams',
-    desc: "Your pipeline lives in DMs and spreadsheets. Follow-ups get missed. Project visibility is low. We build a BD engine that tracks, surfaces, and automates the right actions at the right time.",
-    items: [
-      'Partnership and prospect pipeline with AI prioritization',
-      'Automated follow-up and nurture sequences',
-      'Project and deliverable tracking with cross-team visibility',
-      'Lead-to-close reporting and win/loss analysis',
+      'Automated coordination and status tracking across your team',
+      'Project and client management systems that scale with you',
+      'Weekly reporting that writes itself',
+      'Onboarding systems that work even when you\u2019re too busy to babysit them',
     ],
   },
 ];
@@ -270,47 +273,6 @@ const EDGE_ITEMS = [
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 
 /* ─── Scramble Text ─── */
-function ScrambleText({
-  text,
-  active,
-  className = '',
-}: {
-  text: string;
-  active: boolean;
-  className?: string;
-}) {
-  const [display, setDisplay] = useState(text);
-  const rafRef = useRef<number>(0);
-
-  useEffect(() => {
-    if (!active) {
-      setDisplay(text);
-      return;
-    }
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-    const start = Date.now();
-    const dur = 700;
-    const step = () => {
-      const p = Math.min((Date.now() - start) / dur, 1);
-      const e = 1 - Math.pow(1 - p, 4);
-      const n = Math.floor(e * text.length);
-      let r = '';
-      for (let i = 0; i < text.length; i++) {
-        if (i < n) r += text[i];
-        else if (text[i] === ' ') r += ' ';
-        else r += chars[Math.floor(Math.random() * chars.length)];
-      }
-      setDisplay(r);
-      if (p < 1) rafRef.current = requestAnimationFrame(step);
-      else setDisplay(text);
-    };
-    rafRef.current = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [active, text]);
-
-  return <span className={className}>{display}</span>;
-}
-
 /* ─── Custom Cursor ─── */
 function CustomCursor() {
   const ref = useRef<HTMLDivElement>(null);
@@ -429,9 +391,11 @@ function AccordionItem({
 function ProblemSelector({
   activeProblem,
   setActiveProblem,
+  timerActive,
 }: {
   activeProblem: number;
   setActiveProblem: (i: number) => void;
+  timerActive: boolean;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -443,6 +407,8 @@ function ProblemSelector({
             onClick={() => setActiveProblem(i)}
             className="flex items-center gap-3 text-left transition-all rounded-sm"
             style={{
+              position: 'relative',
+              overflow: 'hidden',
               padding: '0.875rem 1.25rem',
               border: isActive
                 ? '1.5px solid #22D3EE'
@@ -496,6 +462,12 @@ function ProblemSelector({
                 strokeLinejoin="round"
               />
             </svg>
+            {isActive && timerActive && (
+              <div
+                key={activeProblem}
+                className="problem-timer-bar"
+              />
+            )}
           </button>
         );
       })}
@@ -660,12 +632,70 @@ export default function Home() {
   const [selectorOpen, setSelectorOpen] = useState(false);
   const [activeAudience, setActiveAudience] = useState(0);
   const [activeProblem, setActiveProblem] = useState(0);
+
+  /* auto-advance problem selector on station 1 */
+  useEffect(() => {
+    if (station !== 1) return;
+    const id = setInterval(() => {
+      setActiveProblem((prev) => (prev + 1) % PROBLEM_PAIRS.length);
+    }, 10000);
+    return () => clearInterval(id);
+  }, [station, activeProblem]);
+
   const [activeBuild, setActiveBuild] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
   const [activeCaseStudy, setActiveCaseStudy] = useState(0);
   const [caseStudyDir, setCaseStudyDir] = useState(1);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [testimonialDir, setTestimonialDir] = useState(1);
+
+  /* auto-advance station 2: What We Build */
+  useEffect(() => {
+    if (station !== 2) return;
+    const id = setInterval(() => {
+      setActiveBuild((prev) => (prev + 1) % BUILD_CATEGORIES.length);
+    }, 10000);
+    return () => clearInterval(id);
+  }, [station, activeBuild]);
+
+  /* auto-advance station 3: Who We Serve */
+  useEffect(() => {
+    if (station !== 3) return;
+    const id = setInterval(() => {
+      setActiveAudience((prev) => (prev + 1) % AUDIENCES.length);
+    }, 10000);
+    return () => clearInterval(id);
+  }, [station, activeAudience]);
+
+  /* auto-advance station 4: Results */
+  useEffect(() => {
+    if (station !== 4) return;
+    const id = setInterval(() => {
+      setCaseStudyDir(1);
+      setActiveCaseStudy((prev) => (prev + 1) % CASE_STUDIES.length);
+    }, 10000);
+    return () => clearInterval(id);
+  }, [station, activeCaseStudy]);
+
+  /* auto-advance station 5: Testimonials */
+  useEffect(() => {
+    if (station !== 5) return;
+    const id = setInterval(() => {
+      setTestimonialDir(1);
+      setActiveTestimonial((prev) => (prev + 1) % TESTIMONIALS.length);
+    }, 10000);
+    return () => clearInterval(id);
+  }, [station, activeTestimonial]);
+
+  /* auto-advance station 6: How We Work */
+  useEffect(() => {
+    if (station !== 6) return;
+    const id = setInterval(() => {
+      setActiveStep((prev) => (prev + 1) % PROCESS_STEPS.length);
+    }, 10000);
+    return () => clearInterval(id);
+  }, [station, activeStep]);
+
   const lastScrollTime = useRef(0);
   const stationRef = useRef(0);
   const navLocked = useRef(false);
@@ -679,12 +709,12 @@ export default function Home() {
   /* go to station */
   const goStation = useCallback((s: number) => {
     if (s < 0) s = 0;
-    if (s > 9) s = 9;
+    if (s > 8) s = 8;
     stationRef.current = s;
     setStation(s);
     setHeroVisible(s === 0);
-    setNavVisible(s > 0 && s < 9);
-    setFooterVisible(s === 9);
+    setNavVisible(s > 0 && s < 8);
+    setFooterVisible(s === 8);
     setSelectorOpen(false);
     if (s === 1) setActiveProblem(0);
     if (s === 2) setActiveBuild(0);
@@ -702,6 +732,11 @@ export default function Home() {
 
     const wheel = (e: WheelEvent) => {
       e.preventDefault();
+      e.stopPropagation();
+
+      // Ignore tiny deltas from trackpad momentum residuals
+      if (Math.abs(e.deltaY) < 3) return;
+
       // Navigate only on the first event of a gesture (when not locked)
       if (!navLocked.current) {
         navLocked.current = true;
@@ -741,12 +776,12 @@ export default function Home() {
       if (Math.abs(d) > 50) navigate(d > 0 ? 1 : -1);
     };
 
-    window.addEventListener('wheel', wheel, { passive: false });
+    window.addEventListener('wheel', wheel, { passive: false, capture: true });
     window.addEventListener('keydown', key);
     window.addEventListener('touchstart', ts, { passive: true });
     window.addEventListener('touchend', te, { passive: true });
     return () => {
-      window.removeEventListener('wheel', wheel);
+      window.removeEventListener('wheel', wheel, { capture: true });
       window.removeEventListener('keydown', key);
       window.removeEventListener('touchstart', ts);
       window.removeEventListener('touchend', te);
@@ -768,7 +803,7 @@ export default function Home() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden"
-      style={{ background: '#7C3AED' }}
+      style={{ background: '#7C3AED', overscrollBehavior: 'none' }}
     >
       {/* ── Background tile pattern ── */}
       <div
@@ -882,46 +917,6 @@ export default function Home() {
             <div className="hidden md:flex items-center gap-6">
               <a
                 href="#"
-                className="nav-link text-white"
-                onClick={(e) => {
-                  e.preventDefault();
-                  goStation(1);
-                }}
-              >
-                why us
-              </a>
-              <a
-                href="#"
-                className="nav-link text-white"
-                onClick={(e) => {
-                  e.preventDefault();
-                  goStation(4);
-                }}
-              >
-                results
-              </a>
-              <a
-                href="#"
-                className="nav-link text-white"
-                onClick={(e) => {
-                  e.preventDefault();
-                  goStation(6);
-                }}
-              >
-                how we work
-              </a>
-              <a
-                href="#"
-                className="nav-link text-white"
-                onClick={(e) => {
-                  e.preventDefault();
-                  goStation(2);
-                }}
-              >
-                what we build
-              </a>
-              <a
-                href="#"
                 className="button"
                 style={{ minHeight: '2.75rem', fontSize: '0.875rem' }}
                 data-cal-namespace="discovery-call"
@@ -994,10 +989,8 @@ export default function Home() {
                   marginBottom: 'clamp(1.5rem, 3vh, 3rem)',
                 }}
               >
-                We build AI-powered systems that let great teams{' '}
-                <span style={{ color: '#22D3EE' }}>
-                  <ScrambleText text="scale." active={heroVisible} />
-                </span>
+                We build <span style={{ color: '#22D3EE' }}>AI-powered systems</span> that let great teams{' '}
+                scale.
               </motion.h1>
 
               {/* subheadline */}
@@ -1143,7 +1136,7 @@ export default function Home() {
 
       {/* ═══ STATIONS ═══ */}
       <AnimatePresence mode="wait">
-        {!loading && !heroVisible && station >= 1 && station <= 8 && (
+        {!loading && !heroVisible && station >= 1 && station <= 7 && (
           <motion.div
             key={`station-${station}`}
             initial={{ opacity: 0 }}
@@ -1159,7 +1152,7 @@ export default function Home() {
               style={{
                 padding: 'clamp(3.5rem, 8vh, 5rem) clamp(1rem, 3vw, 2rem) clamp(3rem, 8vh, 5rem) clamp(1rem, 4vw, 4rem)',
                 maxHeight: '100vh',
-                overflowY: 'auto',
+                overflowY: 'hidden',
               }}
             >
               {/* ── Station 1: Why Us / The Problem ── */}
@@ -1177,13 +1170,10 @@ export default function Home() {
                       why us
                     </div>
                     <h2 className="heading h2">
-                      <ScrambleText
-                        text="From Operational Chaos to Strategic Momentum."
-                        active={station === 1}
-                      />
+From Operational Chaos to Strategic Momentum
                     </h2>
                     <p className="body-text">
-                      We guide your shift from fighting daily fires to building
+                      We guide your shift from fighting daily ops fires to building
                       the systems that let your team actually scale.
                     </p>
                   </motion.div>
@@ -1199,6 +1189,7 @@ export default function Home() {
                     <ProblemSelector
                       activeProblem={activeProblem}
                       setActiveProblem={setActiveProblem}
+                      timerActive={station === 1}
                     />
                   </motion.div>
 
@@ -1246,10 +1237,7 @@ export default function Home() {
                       className="heading h2"
                       style={{ color: '#22D3EE' }}
                     >
-                      <ScrambleText
-                        text="We encode your team into AI."
-                        active={station === 2}
-                      />
+We encode your team into AI.
                     </h2>
                     <p className="body-text">
                       We&apos;re product experts and AI architects who specialize
@@ -1276,6 +1264,8 @@ export default function Home() {
                           onClick={() => setActiveBuild(i)}
                           className="flex items-center gap-3 text-left transition-all rounded-sm"
                           style={{
+                            position: 'relative',
+                            overflow: 'hidden',
                             padding: '0.875rem 1rem',
                             border: isActive
                               ? '1.5px solid #22D3EE'
@@ -1308,6 +1298,12 @@ export default function Home() {
                           >
                             {cat.title}
                           </span>
+                          {isActive && station === 2 && (
+                            <div
+                              key={activeBuild}
+                              className="problem-timer-bar"
+                            />
+                          )}
                         </button>
                       );
                     })}
@@ -1353,8 +1349,8 @@ export default function Home() {
                             {BUILD_CATEGORIES[activeBuild].desc}
                           </p>
                           <ul className="station-list">
-                            {BUILD_CATEGORIES[activeBuild].items.map((item, idx) => (
-                              <li key={idx} className="station-list-item">
+                            {BUILD_CATEGORIES[activeBuild].items.map((item, remvidx) => (
+                              <li key={remvidx} className="station-list-item">
                                 <svg className="bullet" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M8 3l4 4-4 4" stroke="#22D3EE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                                 {item}
                               </li>
@@ -1379,17 +1375,14 @@ export default function Home() {
                     className="white-text-box"
                   >
                     <div className="label">
-                      built for teams that move fast
+                      who we serve
                     </div>
                     <h2 className="heading h2">
-                      <ScrambleText
-                        text="For the teams that can't afford ops debt."
-                        active={station === 3}
-                      />
+built for teams that move fast
                     </h2>
                     <p className="body-text">
                       Whether you&apos;re running a recruiting agency, a deal team,
-                      or a high-growth operation — if you&apos;re a small,
+                      or a high-growth operation — if you&apos;re a
                       high-velocity team with serious complexity and no dedicated
                       ops infrastructure, we built this for you.
                     </p>
@@ -1412,6 +1405,8 @@ export default function Home() {
                           onClick={() => setActiveAudience(i)}
                           className="flex items-center gap-3 text-left transition-all rounded-sm"
                           style={{
+                            position: 'relative',
+                            overflow: 'hidden',
                             padding: '0.875rem 1.25rem',
                             border: isActive
                               ? '1.5px solid #22D3EE'
@@ -1464,6 +1459,12 @@ export default function Home() {
                               strokeLinejoin="round"
                             />
                           </svg>
+                          {isActive && station === 3 && (
+                            <div
+                              key={activeAudience}
+                              className="problem-timer-bar"
+                            />
+                          )}
                         </button>
                       );
                     })}
@@ -1538,10 +1539,7 @@ export default function Home() {
                       results
                     </div>
                     <h2 className="heading h2">
-                      <ScrambleText
-                        text="Results that speak for themselves."
-                        active={station === 4}
-                      />
+Results that speak for themselves.
                     </h2>
                     <p className="body-text">
                       Three years. Dozens of teams. Here&apos;s what
@@ -1687,9 +1685,18 @@ export default function Home() {
                         </motion.div>
                       </AnimatePresence>
 
+                      {/* Timer bar */}
+                      <div style={{ position: 'relative', height: '3px', background: 'rgba(255,255,255,0.06)' }}>
+                        <div
+                          key={activeCaseStudy}
+                          className="problem-timer-bar"
+                          style={{ position: 'absolute', top: 0 }}
+                        />
+                      </div>
+
                       {/* CTA — fixed at bottom */}
                       <a
-                        href="#"
+                        href={`/case-studies/${CASE_STUDIES[activeCaseStudy].slug}`}
                         className="button w-full"
                         style={{ borderRadius: 0, margin: 0, borderLeft: 0, borderRight: 0, borderBottom: 0 }}
                       >
@@ -1770,10 +1777,7 @@ export default function Home() {
                       className="heading h2"
                       style={{ color: '#22D3EE' }}
                     >
-                      <ScrambleText
-                        text="The Ops Blueprint."
-                        active={station === 6}
-                      />
+The Ops Blueprint.
                     </h2>
                     <p className="body-text">
                       Every engagement follows the same four-phase process.
@@ -1809,19 +1813,14 @@ export default function Home() {
                               padding: '1rem 0.5rem 1.25rem',
                               background: isActive ? 'rgba(34,211,238,0.08)' : 'transparent',
                               borderRight: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                              overflow: 'hidden',
                             }}
                           >
-                            {/* Active indicator bar */}
+                            {/* Active indicator / timer bar */}
                             {isActive && (
                               <div
-                                style={{
-                                  position: 'absolute',
-                                  bottom: 0,
-                                  left: 0,
-                                  right: 0,
-                                  height: '2px',
-                                  background: '#22D3EE',
-                                }}
+                                key={activeStep}
+                                className="problem-timer-bar"
                               />
                             )}
                             <span
@@ -1911,10 +1910,7 @@ export default function Home() {
                       our edge
                     </div>
                     <h2 className="heading h2">
-                      <ScrambleText
-                        text="We're not a traditional agency."
-                        active={station === 7}
-                      />
+We&apos;re not a traditional agency.
                     </h2>
                     <p className="body-text">
                       And if you&apos;ve worked with one, you&apos;ll feel the
@@ -2039,172 +2035,6 @@ export default function Home() {
                 </>
               )}
 
-              {/* ── Station 8: Final CTA ── */}
-              {station === 8 && (
-                <>
-                  <motion.div
-                    custom={0}
-                    variants={boxVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="white-text-box"
-                  >
-                    <h2 className="heading h2">
-                      <ScrambleText
-                        text="Ready to stop running your ops and start building your business?"
-                        active={station === 8}
-                      />
-                    </h2>
-                    <p className="body-text">
-                      We take on a limited number of new clients each quarter. If
-                      you&apos;re serious about transforming how your team
-                      operates, let&apos;s talk.
-                    </p>
-                  </motion.div>
-
-                  {/* Unified CTA card */}
-                  <motion.div
-                    custom={1}
-                    variants={boxVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="station-card"
-                    style={{ overflow: 'hidden' }}
-                  >
-                    {/* Primary CTA */}
-                    <div
-                      style={{
-                        padding: '2rem 1.5rem',
-                        background: 'rgba(34,211,238,0.06)',
-                      }}
-                    >
-                      <div className="flex items-center gap-2.5" style={{ marginBottom: '1.25rem' }}>
-                        <span
-                          className="flex items-center justify-center"
-                          style={{
-                            width: '1.5rem',
-                            height: '1.5rem',
-                            borderRadius: '50%',
-                            background: '#22D3EE',
-                            flexShrink: 0,
-                          }}
-                        >
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
-                            <path d="M5 12h14M12 5v14" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-                          </svg>
-                        </span>
-                        <span
-                          className="text-xs font-medium uppercase"
-                          style={{
-                            fontFamily: "'DM Mono', monospace",
-                            color: '#22D3EE',
-                            letterSpacing: '0.1em',
-                          }}
-                        >
-                          start here
-                        </span>
-                      </div>
-                      <h3
-                        className="font-semibold mb-2"
-                        style={{
-                          fontFamily: "'Inter', sans-serif",
-                          fontSize: '1.25rem',
-                          color: 'white',
-                          lineHeight: '130%',
-                        }}
-                      >
-                        Book a Strategy Call
-                      </h3>
-                      <p
-                        style={{
-                          fontSize: '0.9375rem',
-                          lineHeight: '170%',
-                          color: 'rgba(255,255,255,0.6)',
-                          marginBottom: '1.5rem',
-                        }}
-                      >
-                        No-commitment 30-minute call. We&apos;ll audit your
-                        current ops and tell you exactly where AI can make the
-                        biggest difference.
-                      </p>
-                      <a
-                        href="#"
-                        className="button"
-                        style={{
-                          fontSize: '0.9375rem',
-                          minHeight: '3.25rem',
-                          width: '100%',
-                        }}
-                        data-cal-namespace="discovery-call"
-                        data-cal-link="harshil-tetris/discovery-call"
-                        data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
-                      >
-                        book a strategy call
-                      </a>
-                    </div>
-
-                    {/* Divider */}
-                    <div
-                      style={{
-                        height: '1px',
-                        background: 'rgba(255,255,255,0.08)',
-                      }}
-                    />
-
-                    {/* Secondary CTA */}
-                    <div style={{ padding: '1.5rem' }}>
-                      <div className="flex items-center justify-between gap-4">
-                        <div>
-                          <h4
-                            className="font-semibold mb-1"
-                            style={{
-                              fontFamily: "'Inter', sans-serif",
-                              fontSize: '1rem',
-                              color: 'rgba(255,255,255,0.8)',
-                              lineHeight: '130%',
-                            }}
-                          >
-                            Request a Deck
-                          </h4>
-                          <p
-                            style={{
-                              fontSize: '0.8125rem',
-                              color: 'rgba(255,255,255,0.45)',
-                              lineHeight: '160%',
-                            }}
-                          >
-                            Want to share with your team first? We&apos;ll send
-                            over our full capabilities deck.
-                          </p>
-                        </div>
-                        <a
-                          href="#"
-                          className="flex-shrink-0 flex items-center justify-center rounded-sm transition-all"
-                          style={{
-                            width: '2.75rem',
-                            height: '2.75rem',
-                            border: '1.5px solid rgba(255,255,255,0.2)',
-                            borderRadius: '0.25rem',
-                            color: 'rgba(255,255,255,0.6)',
-                          }}
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <path
-                              d="M7 17L17 7M17 7H7M17 7v10"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </a>
-                      </div>
-                    </div>
-                  </motion.div>
-                </>
-              )}
 
               {/* ── Station 5: Testimonials ── */}
               {station === 5 && (
@@ -2318,6 +2148,15 @@ export default function Home() {
                           </div>
                         </motion.div>
                       </AnimatePresence>
+
+                      {/* Timer bar */}
+                      <div style={{ position: 'relative', height: '3px', background: 'rgba(255,255,255,0.06)' }}>
+                        <div
+                          key={activeTestimonial}
+                          className="problem-timer-bar"
+                          style={{ position: 'absolute', top: 0 }}
+                        />
+                      </div>
                     </motion.div>
 
                     {/* Outside arrow buttons */}
@@ -2395,7 +2234,7 @@ export default function Home() {
       </AnimatePresence>
 
       {/* ═══ STATION SELECTOR (bottom) ═══ */}
-      {!loading && !heroVisible && station >= 1 && station <= 8 && (
+      {!loading && !heroVisible && station >= 1 && station <= 7 && (
         <div className="fixed bottom-4 right-4 z-[120]">
           <AnimatePresence>
             {selectorOpen && (

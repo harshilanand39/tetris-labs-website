@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Study — Caladan</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c0f;
+    --surface: #0d1318;
+    --surface-2: #111820;
+    --border: #1a2430;
+    --border-light: #243040;
+    --text: #d4dde6;
+    --muted: #5a7080;
+    --accent: #00d4ff;
+    --accent-dim: #0a6070;
+    --accent-glow: rgba(0,212,255,0.08);
+    --green: #00e5a0;
+    --green-dim: #0a5040;
+    --white: #eaf2f8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SCAN LINE */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: scan 8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.4;
+  }
+
+  @keyframes scan {
+    0% { top: 0; opacity: 0; }
+    5% { opacity: 0.4; }
+    95% { opacity: 0.4; }
+    100% { top: 100vh; opacity: 0; }
+  }
+
+  /* LAYOUT */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 36px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .container-wide {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 36px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* NAV */
+  nav {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    background: rgba(8,12,15,0.8);
+    position: sticky;
+    top: 0;
+  }
+
+  nav .container-wide {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-brand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .nav-brand span { color: var(--accent); }
+
+  .nav-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .nav-tag span {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* HERO */
+  .hero {
+    padding: 90px 0 80px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: -100px; left: -200px;
+    width: 700px; height: 500px;
+    background: radial-gradient(ellipse, rgba(0,212,255,0.05) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .hero-glow-2 {
+    position: absolute;
+    bottom: -150px; right: -100px;
+    width: 500px; height: 400px;
+    background: radial-gradient(ellipse, rgba(0,229,160,0.04) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 44px;
+  }
+
+  .eyebrow-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent-dim);
+    padding: 4px 10px;
+    background: var(--accent-glow);
+  }
+
+  .eyebrow-sep {
+    width: 32px; height: 1px;
+    background: var(--border-light);
+  }
+
+  .eyebrow-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 4.5vw, 56px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 24px;
+    max-width: 700px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero h1 .accent-text {
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 540px;
+    line-height: 1.8;
+    margin-bottom: 56px;
+  }
+
+  /* METRICS STRIP */
+  .metrics-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--border);
+    background: var(--border);
+    gap: 1px;
+  }
+
+  .metric {
+    background: var(--surface);
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .metric::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .metric:hover::before { opacity: 1; }
+
+  .metric-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .metric-num .unit {
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .metric-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* SECTION */
+  section {
+    padding: 80px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 52px;
+  }
+
+  .section-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    flex-shrink: 0;
+  }
+
+  .section-dash {
+    width: 36px; height: 1px;
+    background: var(--border-light);
+    flex-shrink: 0;
+  }
+
+  .section-label-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(22px, 2.8vw, 34px);
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+
+  h2 .hl { color: var(--accent); }
+
+  .section-intro {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.85;
+    max-width: 600px;
+    margin-bottom: 48px;
+  }
+
+  /* PROBLEM GRID — 3 CATEGORIES */
+  .problem-category {
+    margin-bottom: 2px;
+  }
+
+  .problem-category-header {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .problem-category-header .cat-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-glow);
+    border: 1px solid var(--accent-dim);
+    padding: 3px 8px;
+  }
+
+  .problem-category-header .cat-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+
+  .problem-items {
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+
+  .problem-item {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .problem-item:last-child { border-bottom: none; }
+
+  .problem-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .problem-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  /* DISCOVERY APPROACH */
+  .approach-box {
+    border: 1px solid var(--border-light);
+    background: var(--surface);
+    padding: 32px 36px;
+    margin: 40px 0;
+    position: relative;
+  }
+
+  .approach-box::before {
+    content: 'APPROACH';
+    position: absolute;
+    top: -1px; left: 24px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    background: var(--bg);
+    padding: 0 8px;
+    transform: translateY(-50%);
+  }
+
+  .approach-box p {
+    font-size: 15px;
+    color: #8aa0b0;
+    line-height: 1.8;
+  }
+
+  .approach-box p strong {
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  /* SOLUTION MODULES */
+  .solution-module {
+    border: 1px solid var(--border);
+    margin-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+
+  .solution-module:hover {
+    border-color: var(--border-light);
+  }
+
+  .module-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+  }
+
+  .module-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .module-icon {
+    width: 32px; height: 32px;
+    background: var(--accent-glow);
+    border: 1px solid var(--accent-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  .module-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+
+  .module-tools {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tool-chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border-light);
+    padding: 2px 7px;
+    background: var(--bg);
+  }
+
+  .module-body {
+    padding: 20px 24px;
+    background: var(--bg);
+  }
+
+  .module-body p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  /* BEFORE/AFTER */
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    margin: 48px 0;
+  }
+
+  .ba-col {
+    background: var(--surface);
+    padding: 32px 28px;
+  }
+
+  .ba-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ba-label.before { color: #e05050; }
+  .ba-label.after { color: var(--green); }
+
+  .ba-label::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ba-label.before::before { background: #e05050; }
+  .ba-label.after::before { background: var(--green); }
+
+  .ba-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ba-item {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+    padding-left: 14px;
+    border-left: 2px solid var(--border-light);
+  }
+
+  .ba-col.after-col .ba-item {
+    border-left-color: var(--green-dim);
+    color: #8ab8a8;
+  }
+
+  /* OUTCOME CARDS */
+  .outcome-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-bottom: 40px;
+  }
+
+  .outcome-card {
+    background: var(--surface);
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .outcome-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0.5;
+  }
+
+  .outcome-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .outcome-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* IMPACT LIST */
+  .impact-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .impact-item {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+
+  .impact-item:last-child { border-bottom: none; }
+
+  .impact-category {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-top: 2px;
+  }
+
+  .impact-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.65;
+  }
+
+  /* BODY TEXT */
+  .body-copy {
+    font-size: 15px;
+    color: #7a9aaa;
+    line-height: 1.85;
+    margin-bottom: 20px;
+  }
+
+  .body-copy strong {
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  /* TERMINAL QUOTE */
+  .terminal-quote {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-left: 3px solid var(--accent);
+    padding: 24px 28px;
+    margin: 36px 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  .terminal-quote::before {
+    content: '> ';
+    color: var(--accent);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 56px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-brand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .footer-cta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--accent-dim);
+    padding: 8px 16px;
+    transition: background 0.2s;
+  }
+
+  .footer-cta:hover { background: var(--accent-glow); }
+
+  .rule {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 48px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in { opacity: 0; animation: fadeUp 0.5s ease forwards; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 680px) {
+    .metrics-strip { grid-template-columns: 1fr 1fr; }
+    .before-after { grid-template-columns: 1fr; }
+    .outcome-row { grid-template-columns: 1fr; }
+    .problem-item { grid-template-columns: 1fr; gap: 6px; }
+    .impact-item { grid-template-columns: 1fr; gap: 4px; }
+    .footer-inner { flex-direction: column; gap: 20px; }
+    .module-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container-wide">
+    <a href="#" class="nav-brand"><span>Tetris</span> Labs</a>
+    <div class="nav-tag">
+      <div class="nav-dot"></div>
+      <span>Case Study</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="container">
+    <div class="hero-eyebrow fade-in">
+      <span class="eyebrow-badge">CRM & Data Infrastructure</span>
+      <div class="eyebrow-sep"></div>
+      <span class="eyebrow-text">Crypto Trading · Market Making · Venture</span>
+    </div>
+
+    <h1 class="fade-in delay-1">
+      Turning 9,500+ fragmented interactions into<br>
+      <span class="accent-text">one intelligent operating system.</span>
+    </h1>
+
+    <p class="hero-sub fade-in delay-2">
+      A crypto firm processing $2B+ in daily trading volume had a CRM no one wanted to use. 3,500+ company records, freeform meeting notes, disconnected tools — and a team flying blind on pipeline performance.
+    </p>
+
+    <div class="metrics-strip fade-in delay-3">
+      <div class="metric">
+        <div class="metric-num">$2<span class="unit">B+</span></div>
+        <div class="metric-label">Daily Trading Volume</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">9,500<span class="unit">+</span></div>
+        <div class="metric-label">Interactions Structured</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">3,500<span class="unit">+</span></div>
+        <div class="metric-label">Company Records</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">5<span class="unit">hrs</span></div>
+        <div class="metric-label">Weekly Reporting Saved</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 1: DISCOVERY -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <div class="section-dash"></div>
+      <span class="section-label-text">Discovery</span>
+    </div>
+
+    <h2>A CRM with 3,500 records that <span class="hl">nobody trusted.</span></h2>
+
+    <p class="section-intro">
+      Caladan operates across market making, venture, and structured products — each with distinct workflows, different team members, and entirely different definitions of what a "deal" looks like. We mapped each one from the ground up.
+    </p>
+
+    <div class="approach-box">
+      <p>
+        We started with <strong>stakeholder interviews across every department</strong> — BD, Legal, Finance, and the investment arm. The goal wasn't to understand what systems they used. It was to understand where their actual work happened and why the official CRM wasn't it. What we found: people had quietly built shadow systems to survive.
+      </p>
+    </div>
+
+    <!-- Data Structure Issues -->
+    <div class="problem-category">
+      <div class="problem-category-header">
+        <span class="cat-tag">01</span>
+        <span class="cat-title">Data Structure Issues</span>
+      </div>
+      <div class="problem-items">
+        <div class="problem-item">
+          <div class="problem-name">Fragmented records</div>
+          <div class="problem-desc">The main CRM held 3,500+ company records with no consistent organization. Finding anything required knowing where to look — which most people didn't.</div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-name">Freeform interaction logs</div>
+          <div class="problem-desc">Meeting notes and conversation logs lacked dates, context, and structure. All linked to company records in freeform text — unsearchable, unanalyzable, invisible to anyone who wasn't in the room.</div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-name">Cluttered interface</div>
+          <div class="problem-desc">Multiple teams shared a single CRM view. Irrelevant fields from other departments cluttered every record, making the system overwhelming for anyone trying to do focused work.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Process Issues -->
+    <div class="problem-category">
+      <div class="problem-category-header">
+        <span class="cat-tag">02</span>
+        <span class="cat-title">Process Inefficiencies</span>
+      </div>
+      <div class="problem-items">
+        <div class="problem-item">
+          <div class="problem-name">Manual reporting</div>
+          <div class="problem-desc">Team leads spent 5+ hours weekly checking Google Calendars and chasing people for status updates — time that should have been spent on actual deals.</div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-name">Siloed BD workflows</div>
+          <div class="problem-desc">BD reps were each responsible for ~30 companies but had no focused view to manage them. Their accounts were buried among thousands of records, causing missed follow-ups.</div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-name">Disconnected outreach lists</div>
+          <div class="problem-desc">TMM outreach lists lived in Google Sheets entirely separate from the CRM. No connection between outreach activity and deal records.</div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-name">Zero pipeline visibility</div>
+          <div class="problem-desc">No analytics on pipeline performance, deal velocity, or conversion rates. Leadership was making decisions without data.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UX Issues -->
+    <div class="problem-category">
+      <div class="problem-category-header">
+        <span class="cat-tag">03</span>
+        <span class="cat-title">User Experience Problems</span>
+      </div>
+      <div class="problem-items">
+        <div class="problem-item">
+          <div class="problem-name">System avoidance</div>
+          <div class="problem-desc">BD members actively avoided the CRM due to information overload. The system that was supposed to help them was creating more friction than working without it.</div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-name">Shadow systems</div>
+          <div class="problem-desc">Team members built their own personal tracking spreadsheets outside the CRM — a clear signal that the official system had failed to earn their trust.</div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-name">Cross-team friction</div>
+          <div class="problem-desc">Legal, Finance, and BD teams couldn't easily surface relevant information from each other, creating bottlenecks at the exact moments deals needed to move fast.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="terminal-quote">
+      The CRM wasn't a source of truth. It was a filing cabinet people had stopped opening.
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION 2: SOLUTION -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <div class="section-dash"></div>
+      <span class="section-label-text">What We Built</span>
+    </div>
+
+    <h2>One central system. Every team <span class="hl">finally using it.</span></h2>
+
+    <p class="section-intro">
+      The solution wasn't to replace the CRM — it was to make it actually work. We rebuilt the data architecture, automated the messy parts, and gave each team a view that matched how they actually operated.
+    </p>
+
+    <div class="solution-module">
+      <div class="module-header">
+        <div class="module-left">
+          <div class="module-icon">DB</div>
+          <div class="module-name">Dedicated Conversations Database</div>
+        </div>
+        <div class="module-tools">
+          <span class="tool-chip">Notion</span>
+          <span class="tool-chip">n8n</span>
+          <span class="tool-chip">Fireflies</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <p>Created a structured, standalone interactions database to track all client conversations — with standardized formats requiring date, participants, service tags, and context. Every meeting is now a queryable record, not a freeform note buried in a company page. 9,500+ historical interactions were migrated and restructured.</p>
+      </div>
+    </div>
+
+    <div class="solution-module">
+      <div class="module-header">
+        <div class="module-left">
+          <div class="module-icon">AI</div>
+          <div class="module-name">AI-Powered Data Transformation</div>
+        </div>
+        <div class="module-tools">
+          <span class="tool-chip">n8n</span>
+          <span class="tool-chip">LLM</span>
+          <span class="tool-chip">Notion API</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <p>Built custom n8n workflows to convert years of unstructured meeting notes into properly formatted database entries. The pipeline processes freeform text through an LLM, converts it to Markdown, and writes it back to Notion in the correct block format — with assigned owners, dates, and service tags applied automatically. This is what turned 9,500+ legacy records from noise into signal.</p>
+      </div>
+    </div>
+
+    <div class="solution-module">
+      <div class="module-header">
+        <div class="module-left">
+          <div class="module-icon">👤</div>
+          <div class="module-name">Team-Specific Views & Personal Dashboards</div>
+        </div>
+        <div class="module-tools">
+          <span class="tool-chip">Notion</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <p>Each department now has a purpose-built interface within the same central repository. BD reps see only their ~30 assigned companies in a focused pipeline view. Legal and Finance access the fields relevant to them. Team leads have a global performance dashboard. The overwhelming single-view problem that caused CRM avoidance is eliminated entirely.</p>
+      </div>
+    </div>
+
+    <div class="solution-module">
+      <div class="module-header">
+        <div class="module-left">
+          <div class="module-icon">📊</div>
+          <div class="module-name">Automated Pipeline Analytics</div>
+        </div>
+        <div class="module-tools">
+          <span class="tool-chip">Notion</span>
+          <span class="tool-chip">Google Sheets</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <p>Built dashboards tracking calls by owner, proposals submitted, deals closed, and pipeline stage distribution — updated automatically without anyone needing to compile reports. Team leads moved from 5+ hours of weekly manual reporting to real-time visibility on demand. Pattern recognition across conversations now surfaces common follow-up items and themes automatically.</p>
+      </div>
+    </div>
+
+    <div class="solution-module">
+      <div class="module-header">
+        <div class="module-left">
+          <div class="module-icon">⇄</div>
+          <div class="module-name">Streamlined Data Flow & Integrations</div>
+        </div>
+        <div class="module-tools">
+          <span class="tool-chip">Google Sheets</span>
+          <span class="tool-chip">Fireflies</span>
+          <span class="tool-chip">Notion</span>
+          <span class="tool-chip">n8n</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <p>Connected the previously siloed stack: call recordings from Fireflies auto-populate the conversations database; Google Sheets outreach lists sync with CRM records; data moves between systems without manual intervention. The TMM outreach workflow that lived entirely outside the CRM is now directly integrated into the deal record it belongs to.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION 3: BEFORE/AFTER -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <div class="section-dash"></div>
+      <span class="section-label-text">The Transformation</span>
+    </div>
+
+    <h2>Before and <span class="hl">after.</span></h2>
+
+    <div class="before-after">
+      <div class="ba-col">
+        <div class="ba-label before">Before</div>
+        <div class="ba-items">
+          <div class="ba-item">3,500+ records with no consistent structure or ownership</div>
+          <div class="ba-item">Meeting notes as freeform text — unsearchable and context-free</div>
+          <div class="ba-item">5+ hours weekly spent manually chasing pipeline updates</div>
+          <div class="ba-item">BD reps building personal spreadsheets to survive</div>
+          <div class="ba-item">Outreach lists living in Google Sheets, disconnected from CRM</div>
+          <div class="ba-item">Legal, Finance, and BD operating with no shared visibility</div>
+          <div class="ba-item">Zero analytics on deal velocity, conversion, or team performance</div>
+        </div>
+      </div>
+      <div class="ba-col after-col">
+        <div class="ba-label after">After</div>
+        <div class="ba-items">
+          <div class="ba-item">9,500+ structured interaction records with dates, owners, and tags</div>
+          <div class="ba-item">Every meeting queryable — surfaceable in seconds by any team member</div>
+          <div class="ba-item">Real-time pipeline dashboards replacing weekly manual reporting</div>
+          <div class="ba-item">Personalized BD views — each rep focused on their 30 companies</div>
+          <div class="ba-item">Outreach lists integrated directly into deal records in the CRM</div>
+          <div class="ba-item">Team-specific interfaces, single source of truth for all teams</div>
+          <div class="ba-item">Full pipeline analytics: stage duration, velocity, conversion rates</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION 4: OUTCOMES -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <div class="section-dash"></div>
+      <span class="section-label-text">Outcomes</span>
+    </div>
+
+    <h2>A system the team <span class="hl">actually uses.</span></h2>
+
+    <p class="section-intro">
+      The measure of a CRM rebuild isn't the number of records migrated. It's whether the team opens it the next morning.
+    </p>
+
+    <div class="outcome-row">
+      <div class="outcome-card">
+        <div class="outcome-num">9,500+</div>
+        <div class="outcome-desc">Legacy interactions converted from freeform notes into structured, linked database records with full metadata</div>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-num">5hrs</div>
+        <div class="outcome-desc">Weekly manual reporting time eliminated — team leads now have real-time pipeline visibility without compiling it themselves</div>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-num">100%</div>
+        <div class="outcome-desc">Team adoption — members who previously built shadow systems now operate entirely within the central platform</div>
+      </div>
+    </div>
+
+    <div class="impact-list">
+      <div class="impact-item">
+        <div class="impact-category">Deal Intelligence</div>
+        <div class="impact-text">All team members can now track exactly how long any deal has spent in each pipeline stage — enabling data-driven decisions on when to push, hold, or deprioritize.</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-category">Accountability</div>
+        <div class="impact-text">Individual performance metrics (client conversations, proposals submitted, deals closed) are now visible at the team-lead level, driving consistent follow-up behavior across the BD team.</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-category">Pattern Recognition</div>
+        <div class="impact-text">AI workflows across 9,500+ conversation records now identify common themes, follow-up patterns, and deal signals that were previously invisible inside the unstructured data.</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-category">Cross-team Flow</div>
+        <div class="impact-text">Legal and Finance now access deal-relevant information directly from the CRM without requesting it from BD — removing the friction that slowed deal progression at the closing stage.</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-category">Institutional Memory</div>
+        <div class="impact-text">Every client interaction — from an initial cold outreach to a closing call — is now permanently captured, attributed, and retrievable. Caladan's relationship history no longer lives in individual inboxes.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="rule"></div>
+    <div class="footer-inner">
+      <div class="footer-brand">Tetris Labs · Operations for Ambitious Teams</div>
+      <a href="#" class="footer-cta">Work with us →</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.solution-module, .problem-items, .outcome-card, .impact-item, .ba-col').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(14px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>

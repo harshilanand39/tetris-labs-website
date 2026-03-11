@@ -98,6 +98,24 @@ a {
   }
 }
 
+@keyframes problemTimerBar {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.problem-timer-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: #22D3EE;
+  animation: problemTimerBar 10s linear forwards;
+}
+
 @keyframes float {
   0%,
   100% {
@@ -324,32 +342,6 @@ a {
 
 .nav-link.active {
   color: var(--color-secondary);
-}
-
-/* ===== SCRAMBLE TEXT ===== */
-
-.scramble-container {
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-}
-
-.shadow-text {
-  visibility: hidden;
-  position: relative;
-  white-space: nowrap;
-}
-
-.scramble-text {
-  position: absolute;
-  top: 0;
-  left: 0;
-  white-space: nowrap;
-}
-
-.scramble-char {
-  display: inline-block;
-  min-width: 0.5em;
 }
 
 /* ===== PROGRESS BAR ===== */

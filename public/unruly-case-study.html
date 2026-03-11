@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Study — Unruly Capital</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a08;
+    --surface: #111110;
+    --border: #1e1e1b;
+    --border-light: #2a2a26;
+    --text: #e8e6df;
+    --muted: #7a7870;
+    --accent: #c8b97a;
+    --accent-dim: #8a7d52;
+    --white: #f5f3ec;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* LAYOUT */
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .container-wide {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER NAV */
+  nav {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
+  }
+
+  nav .container-wide {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .nav-brand span {
+    color: var(--accent);
+  }
+
+  .nav-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 100px 0 80px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 0; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(ellipse, rgba(200,185,122,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .eyebrow-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent-dim);
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  .eyebrow-divider {
+    width: 40px;
+    height: 1px;
+    background: var(--border-light);
+  }
+
+  .eyebrow-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--white);
+    margin-bottom: 28px;
+    max-width: 680px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.75;
+    margin-bottom: 60px;
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--border);
+  }
+
+  .stat-item {
+    padding: 28px 24px;
+    border-right: 1px solid var(--border);
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* SECTION STRUCTURE */
+  section {
+    padding: 80px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+  }
+
+  .section-line {
+    flex: 1;
+    max-width: 40px;
+    height: 1px;
+    background: var(--border-light);
+  }
+
+  .section-title-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 400;
+    color: var(--white);
+    line-height: 1.3;
+    margin-bottom: 24px;
+  }
+
+  h2 em { font-style: italic; color: var(--accent); }
+
+  .section-intro {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 48px;
+    max-width: 620px;
+  }
+
+  /* DISCOVERY SECTION */
+  .discovery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    margin-bottom: 48px;
+  }
+
+  .discovery-card {
+    background: var(--surface);
+    padding: 32px 28px;
+  }
+
+  .discovery-card .person {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .discovery-card .role {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .discovery-card p {
+    font-size: 14px;
+    color: #9a9890;
+    line-height: 1.7;
+  }
+
+  .quote-block {
+    border-left: 2px solid var(--accent-dim);
+    padding: 20px 24px;
+    background: rgba(200,185,122,0.04);
+    margin: 32px 0;
+  }
+
+  .quote-block p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .quote-block .attribution {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* FINDINGS — 4 PILLARS */
+  .pillars {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .pillar {
+    background: var(--bg);
+    padding: 36px 32px;
+    position: relative;
+  }
+
+  .pillar-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-dim);
+    letter-spacing: 0.12em;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .pillar h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--white);
+    line-height: 1.4;
+    margin-bottom: 16px;
+  }
+
+  .pillar p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  .friction-list {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .friction-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: #6a6860;
+  }
+
+  .friction-item::before {
+    content: '—';
+    color: var(--accent-dim);
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* SOLUTION CLUSTERS */
+  .solution-cluster {
+    margin-bottom: 56px;
+  }
+
+  .cluster-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cluster-icon {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    background: var(--surface);
+  }
+
+  .cluster-meta {}
+
+  .cluster-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 2px;
+  }
+
+  .cluster-subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .workflow-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .workflow-item {
+    background: var(--surface);
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 24px;
+    align-items: start;
+    transition: background 0.2s;
+  }
+
+  .workflow-item:hover { background: #161614; }
+
+  .workflow-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .workflow-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    border: 1px solid var(--border-light);
+    padding: 2px 6px;
+    margin-top: 6px;
+    border-radius: 1px;
+  }
+
+  .workflow-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  /* METHODOLOGY CALLOUT */
+  .method-callout {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    padding: 36px 40px;
+    margin: 48px 0;
+    position: relative;
+  }
+
+  .method-callout::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    color: var(--accent);
+    opacity: 0.15;
+    position: absolute;
+    top: 12px;
+    left: 28px;
+    line-height: 1;
+  }
+
+  .method-callout p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 19px;
+    color: var(--white);
+    line-height: 1.6;
+    padding-left: 20px;
+  }
+
+  /* OUTCOMES */
+  .outcome-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-bottom: 48px;
+  }
+
+  .outcome-card {
+    background: var(--surface);
+    padding: 32px 28px;
+  }
+
+  .outcome-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .outcome-label {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .outcome-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--border-light);
+    margin-top: 12px;
+    display: block;
+  }
+
+  .outcome-text-item {
+    display: flex;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .outcome-text-item:last-child { border-bottom: none; }
+
+  .outcome-bullet {
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-top: 9px;
+    flex-shrink: 0;
+  }
+
+  .outcome-text-item p {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 60px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .footer-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .footer-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-dim);
+    padding-bottom: 2px;
+    transition: opacity 0.2s;
+  }
+
+  .footer-cta:hover { opacity: 0.7; }
+
+  /* DIVIDER */
+  .rule {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin: 48px 0;
+  }
+
+  /* BODY COPY */
+  .body-copy {
+    font-size: 16px;
+    color: #9a9890;
+    line-height: 1.85;
+    margin-bottom: 24px;
+  }
+
+  .body-copy strong {
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  /* SCROLL ANIMATION */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 680px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .stat-item:nth-child(2) { border-right: none; }
+    .stat-item:nth-child(3) { border-top: 1px solid var(--border); }
+    .pillars { grid-template-columns: 1fr; }
+    .discovery-grid { grid-template-columns: 1fr; }
+    .outcome-grid { grid-template-columns: 1fr; }
+    .workflow-item { grid-template-columns: 1fr; gap: 8px; }
+    .footer-inner { flex-direction: column; gap: 20px; }
+    h2 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container-wide">
+    <a href="#" class="nav-brand"><span>Tetris</span> Labs</a>
+    <span class="nav-right">Case Study</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-eyebrow fade-in">
+      <span class="eyebrow-tag">VC Operations</span>
+      <div class="eyebrow-divider"></div>
+      <span class="eyebrow-label">Venture Capital · London</span>
+    </div>
+
+    <h1 class="fade-in delay-1">
+      Rebuilding a VC's entire operating stack — <em>from the inside out.</em>
+    </h1>
+
+    <p class="hero-sub fade-in delay-2">
+      A $50M deep tech fund. Four team members. Eleven manual workflows holding them back from doing the work that actually mattered — finding the next breakthrough company.
+    </p>
+
+    <div class="stats-row fade-in delay-3">
+      <div class="stat-item">
+        <div class="stat-number">$50M</div>
+        <div class="stat-label">AUM</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Portfolio Cos.</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">4</div>
+        <div class="stat-label">Team Members</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">11</div>
+        <div class="stat-label">Workflows Rebuilt</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 1: DISCOVERY -->
+<section>
+  <div class="container">
+    <div class="section-label">
+      <span class="section-number">01</span>
+      <div class="section-line"></div>
+      <span class="section-title-text">How We Mapped Their World</span>
+    </div>
+
+    <h2>We didn't ask what they wanted. We watched what they <em>did.</em></h2>
+
+    <p class="section-intro">
+      Before touching a single tool, we ran deep discovery sessions with every member of the team — sitting in on live work, shadowing calls, and mapping the unspoken logic behind how decisions actually got made.
+    </p>
+
+    <div class="discovery-grid">
+      <div class="discovery-card">
+        <div class="person">Stefano</div>
+        <div class="role">Managing Partner · Deal Flow & Thesis</div>
+        <p>Manually triaged hundreds of inbound submissions, with no systematic way to surface deals aligned to niche theses like sugar reduction or real-world decentralization. High-potential companies were being missed simply because there wasn't enough hours in the day.</p>
+      </div>
+      <div class="discovery-card">
+        <div class="person">Francesco</div>
+        <div class="role">Partner · Deal Evaluation</div>
+        <p>Reviewed decks entirely by hand, wrote rejection emails manually — often weeks after submission. No structured framework existed for evaluating founder quality across calls. Institutional knowledge lived only in his head.</p>
+      </div>
+      <div class="discovery-card">
+        <div class="person">Francesca</div>
+        <div class="role">Operations · Investment Closing</div>
+        <p>The entire KYB/KYC compliance process sat on her shoulders. Founders drip-sending documents, manual Drive organization, manual Carta uploads — bad file naming alone was adding 30–40% overhead to every single deal close.</p>
+      </div>
+      <div class="discovery-card">
+        <div class="person">Vicky</div>
+        <div class="role">Portfolio · Qualitative Tracking</div>
+        <p>Maintained qualitative portfolio data in Airtable with no connection to Tactic (financial data) or Attio (CRM). Valuable context about portfolio companies existed only in her spreadsheet, invisible to the rest of the team.</p>
+      </div>
+    </div>
+
+    <div class="quote-block">
+      <p>The real insight wasn't any single broken process. It was that each person had built their own private system — and none of them talked to each other.</p>
+      <span class="attribution">Observation from Discovery · Tetris Labs</span>
+    </div>
+
+    <p class="body-copy">
+      Discovery surfaced one structural truth: the firm had four highly capable people operating as <strong>four separate firms</strong>. Data didn't flow. Decisions couldn't compound on prior knowledge. And every hour spent on manual ops was an hour not spent on the work that actually moves the needle — finding and backing the next breakthrough company.
+    </p>
+
+    <p class="body-copy">
+      The output was a complete operational map across four functional areas: <strong>Deal Sourcing, Deal Evaluation, Investment Closing,</strong> and <strong>Portfolio Management</strong> — with clear friction points, tool dependencies, and automation opportunity for each.
+    </p>
+  </div>
+</section>
+
+<!-- SECTION 2: FINDINGS -->
+<section>
+  <div class="container">
+    <div class="section-label">
+      <span class="section-number">02</span>
+      <div class="section-line"></div>
+      <span class="section-title-text">What We Found</span>
+    </div>
+
+    <h2>Four functional areas. <em>Four systemic breakdowns.</em></h2>
+
+    <p class="section-intro">
+      The problems weren't technical — they were structural. Manual processes had quietly become the load-bearing walls of the firm's operations. Everyone had adapted to the inefficiency rather than challenged it.
+    </p>
+
+    <div class="pillars">
+      <div class="pillar">
+        <span class="pillar-number">01 — Deal Sourcing</span>
+        <h3>Entirely passive. Thesis-blind.</h3>
+        <p>Deal flow was 100% inbound. No system existed to proactively find companies in the narrow spaces the fund genuinely cared about. Edge bets in niche theses — the exact areas where Unruly had conviction — were being systematically missed.</p>
+        <div class="friction-list">
+          <div class="friction-item">No thesis-driven sourcing pipeline</div>
+          <div class="friction-item">Funding announcements missed entirely</div>
+          <div class="friction-item">No market intelligence infrastructure</div>
+          <div class="friction-item">Newsletter curation done manually</div>
+        </div>
+      </div>
+
+      <div class="pillar">
+        <span class="pillar-number">02 — Deal Evaluation</span>
+        <h3>Manual, slow, and unscalable.</h3>
+        <p>Decks sat unreviewed. Rejections took weeks. No structured scoring framework existed for founder calls. Institutional knowledge — memos, call notes, LP feedback — was scattered across six tools with no way to query or compound it.</p>
+        <div class="friction-list">
+          <div class="friction-item">Founders waiting weeks for responses</div>
+          <div class="friction-item">No call scoring or evaluation matrix</div>
+          <div class="friction-item">Knowledge trapped in disconnected tools</div>
+          <div class="friction-item">Memo creation entirely manual</div>
+        </div>
+      </div>
+
+      <div class="pillar">
+        <span class="pillar-number">03 — Investment Closing</span>
+        <h3>Compliance as a one-person bottleneck.</h3>
+        <p>KYB/KYC was fully manual — email chains, drag-and-drop downloads, individual Carta uploads. Founders sent documents in multiple tranches with inconsistent naming. No checklist. No visibility. Every close carried significant avoidable overhead.</p>
+        <div class="friction-list">
+          <div class="friction-item">30–40% overhead from file renaming alone</div>
+          <div class="friction-item">No status dashboard for the team</div>
+          <div class="friction-item">Duplicate data entry across platforms</div>
+          <div class="friction-item">No auto-folder creation on deal moves</div>
+        </div>
+      </div>
+
+      <div class="pillar">
+        <span class="pillar-number">04 — Portfolio Management</span>
+        <h3>Data siloed by person, invisible to the team.</h3>
+        <p>Financial data lived in Tactic (only Francesca used it). Qualitative data lived in Airtable (only Vicky used it). CRM data lived in Attio. No integration between them. Portfolio visibility required assembling three separate sources manually.</p>
+        <div class="friction-list">
+          <div class="friction-item">No two-way sync across tools</div>
+          <div class="friction-item">Manual portfolio updates prone to lag</div>
+          <div class="friction-item">No unified view for the team</div>
+          <div class="friction-item">Documents disconnected from deal records</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: SOLUTION -->
+<section>
+  <div class="container">
+    <div class="section-label">
+      <span class="section-number">03</span>
+      <div class="section-line"></div>
+      <span class="section-title-text">What We Built</span>
+    </div>
+
+    <h2>Eleven systems. One design principle: <em>fit the way they already work.</em></h2>
+
+    <p class="section-intro">
+      Every solution was designed to slot into existing behavioural patterns — not replace them. The team shouldn't have to learn a new way of working. The infrastructure should simply make the way they already work dramatically faster and more intelligent.
+    </p>
+
+    <div class="method-callout">
+      <p>We didn't redesign their workflows. We automated the version of their workflow that existed in their heads — the ideal version they never had time to execute manually.</p>
+    </div>
+
+    <!-- CLUSTER 1 -->
+    <div class="solution-cluster">
+      <div class="cluster-header">
+        <div class="cluster-icon">◎</div>
+        <div class="cluster-meta">
+          <div class="cluster-title">Proactive Deal Intelligence</div>
+          <div class="cluster-subtitle">Deal Sourcing · Market Intelligence</div>
+        </div>
+      </div>
+      <div class="workflow-items">
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">Deal Scout Agent</div>
+            <span class="workflow-tag">n8n · Clay · Attio</span>
+          </div>
+          <div class="workflow-desc">
+            Thesis-driven sourcing agent that crawls niche data sources — forums, newsletters, Discord communities, Product Hunt, Hacker News — across Unruly's conviction areas (e.g., real-world decentralization, sugar reduction, alternative proteins). Each company is enriched via Crunchbase/Clay, scored against a weighted rubric (founder background, traction, community sentiment, market fit), and the top deals each week are auto-posted to Slack with a full breakdown card.
+          </div>
+        </div>
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">Automated Newsletter Scraping</div>
+            <span class="workflow-tag">n8n · Airtable · Attio</span>
+          </div>
+          <div class="workflow-desc">
+            Automated ingestion of funding announcements from newsletters and deal sources directly into Airtable, with automatic creation of the relevant pipeline records in Attio. No more manually tracking rounds from email.
+          </div>
+        </div>
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">Internal News Portal + Newsletter</div>
+            <span class="workflow-tag">Yutori · Airtable · Google Docs</span>
+          </div>
+          <div class="workflow-desc">
+            A fleet of market intel scouts deployed via Yutori, tracking the entire web across Unruly's thesis areas — funding announcements, partnerships, research, regulatory developments. Stories are published instantly to an internal news portal, tagged by category. Every Friday, a curated digest is assembled automatically and delivered to the relevant team members.
+          </div>
+        </div>
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">Newsletter on Autopilot</div>
+            <span class="workflow-tag">Slack · Airtable · Google Docs</span>
+          </div>
+          <div class="workflow-desc">
+            Captured all links from the team's #reading Slack channel into a structured Airtable base. Each link is auto-described and tagged by category. Every week, the agent assembles a Google Doc newsletter using all links from that week, structured using the team's established newsletter format and trained on all previous editions.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLUSTER 2 -->
+    <div class="solution-cluster">
+      <div class="cluster-header">
+        <div class="cluster-icon">◈</div>
+        <div class="cluster-meta">
+          <div class="cluster-title">Smarter Evaluation Infrastructure</div>
+          <div class="cluster-subtitle">Deal Evaluation · Institutional Knowledge</div>
+        </div>
+      </div>
+      <div class="workflow-items">
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">Investment Calls Copilot</div>
+            <span class="workflow-tag">Circle Back · Grok · Attio</span>
+          </div>
+          <div class="workflow-desc">
+            AI-powered analysis of founder call recordings. Transcripts are segmented into phases (intro, traction, team, close) and scored against a structured evaluation matrix across dimensions like market knowledge, communication clarity, and confidence. Scores are logged automatically into the deal record in Attio alongside reasoning. Designed to provide 30–50% more data-driven signal per founder evaluation.
+          </div>
+        </div>
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">Auto-Pass Email Pipeline</div>
+            <span class="workflow-tag">Attio · n8n · Slack</span>
+          </div>
+          <div class="workflow-desc">
+            Deals untagged as "Review" or "Consider" after 48 hours trigger an LLM-personalized rejection email — referencing the founder's name and company — pending one-click Slack approval from the team. Eliminates the founder limbo problem entirely. Stefano and Francesco maintain full oversight; the automation eliminates the friction that caused weeks-long delays.
+          </div>
+        </div>
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">RAG Bot — Institutional Knowledge</div>
+            <span class="workflow-tag">Pinecone · LLM · Attio · Google Drive</span>
+          </div>
+          <div class="workflow-desc">
+            All of Unruly's institutional knowledge — deal notes, investment memos, call recordings, LP feedback — indexed into a vector store and made queryable via conversational AI. The team can now ask "Show all hydrogen-related startups we vetted in Q1 2025 with ARR > $100K" or "What did LPs say about our robotics investments?" and get an answer in seconds rather than hours.
+          </div>
+        </div>
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">Automated Investment Memo Creation</div>
+            <span class="workflow-tag">LLM · Google Drive · Attio</span>
+          </div>
+          <div class="workflow-desc">
+            Investment memos auto-generated from deal data, call notes, and enriched company information already captured in Attio and Google Drive. First-pass memos produced in minutes rather than hours, ready for partner review and refinement.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLUSTER 3 -->
+    <div class="solution-cluster">
+      <div class="cluster-header">
+        <div class="cluster-icon">◇</div>
+        <div class="cluster-meta">
+          <div class="cluster-title">Frictionless Investment Closing</div>
+          <div class="cluster-subtitle">KYB/KYC · Compliance · Document Management</div>
+        </div>
+      </div>
+      <div class="workflow-items">
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">KYB/KYC Automation</div>
+            <span class="workflow-tag">Gmail · n8n · Google Drive · Carta</span>
+          </div>
+          <div class="workflow-desc">
+            Gmail threads labelled "unruly-kyb" are watched automatically. Attachments are downloaded, intelligently renamed using LLM classification (pattern: <em>Company_DocType_Date.pdf</em>), and moved to the canonical Drive path — eliminating the 30–40% overhead that came from manual renaming alone. A KYB Tracker auto-populates with document status (Missing / Received / Uploaded), with Slack reminders for outstanding items.
+          </div>
+        </div>
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">Founder Upload Portal</div>
+            <span class="workflow-tag">Supabase · Airtable · Google Drive</span>
+          </div>
+          <div class="workflow-desc">
+            Magic-link portal for founders to upload KYB/KYC documents directly. Each founder sees a personalized checklist rendered from Airtable. Files are auto-organized in Drive, doc types detected automatically, and progress is visible to both sides. Eliminates the multi-batch email chaos that previously defined every deal close.
+          </div>
+        </div>
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">Attio → G-Drive Auto-Folder</div>
+            <span class="workflow-tag">Attio · Google Drive · n8n</span>
+          </div>
+          <div class="workflow-desc">
+            When a deal moves to "Invested" status in Attio, a structured Google Drive folder is automatically created for the portfolio company and all existing deal files are migrated in. Teams continue using Drive as normal — the system just ensures structure appears at exactly the right moment.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLUSTER 4 -->
+    <div class="solution-cluster">
+      <div class="cluster-header">
+        <div class="cluster-icon">◻</div>
+        <div class="cluster-meta">
+          <div class="cluster-title">Unified Portfolio Data Ecosystem</div>
+          <div class="cluster-subtitle">Portfolio Management · Data Sync</div>
+        </div>
+      </div>
+      <div class="workflow-items">
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">Tactyc ↔ Airtable ↔ Attio Sync</div>
+            <span class="workflow-tag">n8n · API Integrations</span>
+          </div>
+          <div class="workflow-desc">
+            Two-way sync connecting financial data (Tactyc: valuations, ownership percentages, KPIs), qualitative data (Airtable: runway, cash burn), and CRM data (Attio). A shared company ID as the primary key. Daily sync schedule. Simplified Attio views now give the entire team real-time visibility into key financial metrics that previously only Francesca could access.
+          </div>
+        </div>
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">G-Drive ↔ Tactyc Document Sync</div>
+            <span class="workflow-tag">Google Drive API · Tactyc API</span>
+          </div>
+          <div class="workflow-desc">
+            Investment documents (SAFEs, term sheets, KYC files) automatically synced from Google Drive to Tactyc's data room. Documents tagged with metadata on upload. Eliminates the redundant manual upload process Francesca previously ran for every investment.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLUSTER 5 -->
+    <div class="solution-cluster">
+      <div class="cluster-header">
+        <div class="cluster-icon">△</div>
+        <div class="cluster-meta">
+          <div class="cluster-title">Event Management System</div>
+          <div class="cluster-subtitle">Community · Operations</div>
+        </div>
+      </div>
+      <div class="workflow-items">
+        <div class="workflow-item">
+          <div>
+            <div class="workflow-name">End-to-End Event Flow</div>
+            <span class="workflow-tag">Attio · Stripe · Luma · n8n</span>
+          </div>
+          <div class="workflow-desc">
+            A complete automated attendee journey: online application → instant Attio sync and auto-enrichment → approval triggers a custom Stripe payment link sent via personalized LLM-generated email → 3-email follow-up sequence using enriched attendee data → on payment, automatically marked as confirmed in CRM, added to the Luma event, and sent a confirmation. Zero manual steps between application and arrival.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION 4: OUTCOMES -->
+<section>
+  <div class="container">
+    <div class="section-label">
+      <span class="section-number">04</span>
+      <div class="section-line"></div>
+      <span class="section-title-text">What Changed</span>
+    </div>
+
+    <h2>From four separate firms to one <em>connected operating system.</em></h2>
+
+    <p class="section-intro">
+      The goal was never to automate for automation's sake. It was to give a small, ambitious team the operational leverage to operate at the level their conviction deserved.
+    </p>
+
+    <div class="outcome-grid">
+      <div class="outcome-card">
+        <div class="outcome-number">50–70%</div>
+        <div class="outcome-label">Reduction in manual deal screening time through automated triage and AI-powered first-pass evaluation</div>
+        <span class="outcome-note">Target · Deal Evaluation</span>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-number">48hrs</div>
+        <div class="outcome-label">Maximum response time to any inbound submission, down from weeks of founder limbo</div>
+        <span class="outcome-note">Delivered · Deal Flow</span>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-number">~40%</div>
+        <div class="outcome-label">Overhead eliminated from investment closing through intelligent document automation and renaming</div>
+        <span class="outcome-note">Delivered · KYB/KYC</span>
+      </div>
+    </div>
+
+    <div class="outcome-text-item">
+      <div class="outcome-bullet"></div>
+      <p>For the first time, the entire team has a unified view of every portfolio company — financial data, qualitative metrics, and deal history, accessible in one place without assembling it manually from three tools.</p>
+    </div>
+    <div class="outcome-text-item">
+      <div class="outcome-bullet"></div>
+      <p>Thesis-driven deal sourcing is now proactive, not passive — the firm can now systematically see every company operating in the narrow spaces it cares most about, rather than relying on what shows up in the inbox.</p>
+    </div>
+    <div class="outcome-text-item">
+      <div class="outcome-bullet"></div>
+      <p>Institutional knowledge that lived scattered across six tools is now queryable in seconds — memos, call notes, LP feedback, and deal history accessible through a single conversational interface.</p>
+    </div>
+    <div class="outcome-text-item">
+      <div class="outcome-bullet"></div>
+      <p>The team's market intelligence now arrives in real-time and in summary — a continuous news portal and weekly digest replacing the ad-hoc tab-checking and Slack link sharing that passed for staying informed.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="rule"></div>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        Tetris Labs · Operations for Ambitious Teams
+      </div>
+      <a href="#" class="footer-cta">Work with us →</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Intersection observer for subtle scroll reveals
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.pillar, .discovery-card, .workflow-item, .outcome-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
