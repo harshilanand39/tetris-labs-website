@@ -1126,13 +1126,13 @@ export default function Home() {
               </motion.p>
 
               {/* CTAs + trust — share the same inline width */}
-              <div style={{ display: 'inline-flex', flexDirection: 'column', gap: 0 }}>
+              <div style={{ display: 'inline-flex', flexDirection: 'column', gap: 'clamp(1.5rem, 4vh, 4rem)' }}>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.65, duration: 0.6, ease: EASE_OUT }}
                   className="flex flex-nowrap"
-                  style={{ gap: 'clamp(0.5rem, 1.5vw, 1.25rem)', marginBottom: 'clamp(2.5rem, 5vh, 5rem)' }}
+                  style={{ gap: 'clamp(0.5rem, 1.5vw, 1.25rem)' }}
                 >
                   <button
                     className="button"
@@ -1170,7 +1170,7 @@ export default function Home() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.9, duration: 0.8 }}
-                  style={{ maxWidth: isMobile ? '100%' : '45%', paddingTop: '3rem' }}
+                  style={{ maxWidth: isMobile ? '100%' : '45%' }}
                 >
                   <p
                     style={{
