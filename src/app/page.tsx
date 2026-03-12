@@ -42,7 +42,7 @@ const CASE_STUDIES = [
     tags: ['Talent Pipeline', 'Custom ATS', 'Client CRM', 'Workflow Automations', 'Onboarding Engine'],
   },
   {
-    slug: 'unruly-capital',
+    slug: 'vc-case-study',
     client: 'Deep Tech VC',
     stats: [
       { value: '$50M', label: 'AUM' },
@@ -787,21 +787,27 @@ export default function Home() {
     };
 
     let ty = 0;
-    const ts = (e: TouchEvent) => { ty = e.touches[0].clientY; };
+    let startScrollTop = 0;
+    const ts = (e: TouchEvent) => {
+      ty = e.touches[0].clientY;
+      startScrollTop = stationScrollRef.current?.scrollTop ?? 0;
+    };
     const te = (e: TouchEvent) => {
       const d = ty - e.changedTouches[0].clientY;
       if (Math.abs(d) < 50) return;
 
-      // On mobile, check if the station scroll container can still scroll
       const isMobileNow = window.innerWidth < 768;
       if (isMobileNow && stationScrollRef.current) {
         const el = stationScrollRef.current;
-        const atTop = el.scrollTop <= 5;
-        const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 5;
-        // Swiping up (want next station) — only navigate if at bottom
-        if (d > 0 && !atBottom) return;
-        // Swiping down (want prev station) — only navigate if at top
-        if (d < 0 && !atTop) return;
+        const isScrollable = el.scrollHeight > el.clientHeight + 5;
+
+        if (isScrollable) {
+          const atTop = el.scrollTop <= 5 && startScrollTop <= 5;
+          const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 5;
+          // Only navigate when truly at boundary
+          if (d > 0 && !atBottom) return;
+          if (d < 0 && !atTop) return;
+        }
       }
 
       navigate(d > 0 ? 1 : -1);
