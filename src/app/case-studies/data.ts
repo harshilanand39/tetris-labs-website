@@ -277,7 +277,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     },
   },
   {
-    slug: 'unruly-capital',
+    slug: 'vc-case-study',
     client: '',
     description: 'A $50M deep tech fund. Four team members. Eleven manual workflows holding them back from finding the next breakthrough company.',
     industry: 'Venture Capital',
