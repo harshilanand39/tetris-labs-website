@@ -1,0 +1,182 @@
+# Tetris Labs
+
+> We map your operational chaos, identify every bottleneck, and build custom AI-powered internal tools and agentic workflows — so your team can focus on what actually moves the needle.
+
+Tetris Labs is an AI automation and operations consultancy. We build custom internal tools, agentic workflows, and AI-powered systems for fast-moving teams — helping them scale without adding headcount.
+
+## What We Do
+
+We don't sell software. We build bespoke systems that mirror how your team actually works, then automate everything that shouldn't require a human.
+
+Our process:
+1. Map — Understand your full operational landscape before building anything
+2. Design — Create a concrete system blueprint (the "StoryMap") you approve before we write a line
+3. Build — Deliver working systems in weeks, not months, using our proprietary AI-powered delivery framework
+4. Embed — Train your team, create documentation, and provide 30 days of post-launch support
+
+## Services
+
+### 01 — Agentic Workflows
+Repetitive processes that run autonomously — without anyone pushing a button.
+- Client and candidate status updates that send themselves
+- Intake and routing flows that qualify and assign work automatically
+- Automated reporting (weekly digests, KPI summaries, pipeline reports)
+- Cross-tool sync agents (CRM ↔ Notion ↔ Email ↔ Slack)
+- Follow-up sequences and nurture flows that run on logic, not memory
+
+### 02 — AI-Powered Internal Tools
+Custom-built command centres, dashboards, and intelligence systems tailored to how your team actually works.
+- Pipeline and deal flow command centres
+- Candidate and talent tracking systems
+- Client and project management hubs
+- OKR and milestone dashboards
+- Custom CRMs built on Notion or Airtable with AI layers on top
+
+### 03 — Knowledge & Intelligence Systems
+Your team's institutional knowledge, encoded and made accessible — not buried in docs no one reads.
+- Company wiki with AI-powered search and navigation
+- Decision frameworks and operational playbooks
+- Onboarding systems that encode your culture and process
+- AI-powered meeting notes and action item tracking
+- Process documentation that actually stays up to date
+
+### 04 — Workspace Design & Audit
+We start every engagement here. Map your current state, find the gaps, and design a blueprint before we build anything.
+- Operational landscape mapping
+- Bottleneck and AI-acceleration audit
+- Tool stack rationalization
+- Workspace architecture blueprint (the "StoryMap")
+- Team workflow and behaviour pattern analysis
+
+## Who We Serve
+
+### Recruiting & Talent Teams
+You're placing candidates, managing clients, and tracking a hundred moving pieces at once — across spreadsheets, emails, and tools that don't talk to each other. We build the system that ties it all together.
+- Custom ATS with AI-powered candidate tracking and matching
+- Client pipeline CRM with automated updates and follow-ups
+- Automated candidate status communications
+- Billing and placement tracking dashboards
+- Onboarding flows for new consultants that encode your methodology
+
+### Investment & Deal Teams
+You're running a portfolio or a pipeline with a lean team. Deal flow is messy, reporting is manual, and due diligence takes too long. We build the command centre that fixes all three.
+- AI-powered deal flow intake, scoring, and routing
+- Portfolio monitoring dashboards with automated alerts
+- LP and stakeholder reporting automation
+- Due diligence knowledge bases with AI-powered research layers
+
+### Fast-Moving Operators
+You're building something serious with a lean team. Everyone is in execution mode, and nobody has time to build the systems that would make execution easier. We do that part.
+- Automated coordination and status tracking across your team
+- Project and client management systems that scale with you
+- Weekly reporting that writes itself
+- Onboarding systems that work even when you're too busy to babysit them
+
+## Problems We Solve
+
+**Manual Ops Overload → Agentic Automation**
+Your team is burning 20+ hours a week on work that should run automatically — status updates, reporting, tracking, chasing people for information. We identify every repetitive workflow and replace it with AI-powered systems that run 24/7.
+
+**Fragmented Tool Stack → A Unified Intelligence Layer**
+Your ops live across five different tools and nothing talks to anything else. We build a single, AI-powered workspace that connects your tools, surfaces the right information at the right time, and mirrors how your team actually thinks and works.
+
+**Knowledge Locked in People's Heads → Systems That Think Like Your Team**
+Your processes, frameworks, and institutional knowledge live in the minds of two or three key people. We encode your team's decision-making patterns, workflows, and company ethos directly into AI-powered systems — so your knowledge compounds instead of walking out the door.
+
+**No Time for Strategic Work → Strategic Focus, Finally**
+With your ops running on autopilot through AI, your team gets the headspace to focus on the work that actually creates value.
+
+## Our Edge
+
+- **Faster delivery** — Weeks, not months. Our systems allow us to move at a pace traditional agencies simply can't match.
+- **Lower cost** — Same quality, lower price. We pass on efficiency gains from our approach directly to clients.
+- **Institutional knowledge that compounds** — Every client makes us sharper. Our frameworks improve with every engagement.
+- **Deep operational expertise** — We've built systems for some of the most complex, fast-moving, high-stakes teams in tech.
+
+## Case Studies
+
+### Up Top Search — Recruiting & Talent
+**Industry:** Recruiting & Talent | **Engagement:** Full Build — 8 weeks
+
+Up Top Search is a Web3 talent agency specializing in blockchain and digital assets. They work with 100+ clients and focus on algorithmic trading and blockchain engineering hires.
+
+**Challenge:** Up Top was tracking candidates in spreadsheets, managing client relationships through email threads, and onboarding new clients through a process that lived entirely in the founder's head. Every new client meant more manual work and more hours on administration.
+
+**What we built:**
+- Custom ATS built on Notion with automated candidate pipeline tracking
+- Client CRM with deal flow visibility and automated status communications
+- Onboarding engine that takes a new client from signed contract to fully operational in under 48 hours — without anyone lifting a finger
+- Cross-tool workflow integrations (email, Slack, Notion)
+- Automated weekly pipeline and performance reporting
+- Revenue tracking dashboard with real-time metrics
+- AI agents monitoring client websites for new job listings
+- CRM enrichment agents pulling from Crunchbase
+
+**Outcome:** $3M+ in revenue, 400+ clients — without adding a single person to manage operations.
+
+**Testimonial:** "Of all the wins we've had at Up Top in the past year, none have been more impactful than building out this CRM with Harshil and the team. It's turned me from an unhinged sales guy who hates process, to an operator running a clean business." — Dan Eskow, Founder, Up Top Search
+
+---
+
+### Deep Tech VC — Venture Capital
+**Industry:** Venture Capital | **Engagement:** Full Build
+
+A $50M deep tech fund with 4 team members and 50+ portfolio companies. Their entire operating stack was rebuilt from the inside out.
+
+**Challenge:** Four highly capable people operating as four separate firms. Data didn't flow. Decisions couldn't compound on prior knowledge. Every hour spent on manual ops was an hour not spent finding the next breakthrough company.
+
+**Discovery findings:**
+- Managing Partner manually triaged hundreds of inbound submissions with no systematic way to surface thesis-aligned deals
+- Deal evaluation partner reviewed decks entirely by hand, wrote rejection emails manually — often weeks after submission
+- Entire KYB/KYC compliance process sat on one person; bad file naming alone added 30–40% overhead to every deal close
+- Qualitative portfolio data in Airtable had no connection to financial data or CRM systems
+
+**What we built:**
+- AI-powered deal sourcing pipeline aligned to the fund's niche theses
+- Automated KYB/KYC closing workflow
+- Institutional knowledge RAG bot
+- Unified portfolio data sync across tools
+- End-to-end event management system
+- 11 total workflows rebuilt
+
+**Outcomes:** $50M AUM managed with a 4-person team, 50+ portfolio companies tracked, 11 workflows rebuilt
+
+---
+
+### Caladan — Crypto Trading / Market Making
+**Industry:** Crypto Trading | **Engagement:** Full Build
+
+Caladan is a crypto firm processing $2B+ in daily trading volume. They had a CRM no one wanted to use, 3,500+ company records, freeform meeting notes, and disconnected tools.
+
+**What we built:**
+- Turned 9,500+ fragmented interactions into one intelligent operating system
+- Unified CRM and data infrastructure
+- AI-powered automation across trading operations
+- Market making workflow systems
+
+**Outcomes:** $2B+ daily trading volume supported, 9,500+ interactions structured, 5 hours per week saved on reporting
+
+---
+
+## Client Testimonials
+
+"Working with Harshil was an absolute dream. My contacts, documents and advisory services framework was literally ALL over the place. In a short period of time Harshil listened to me, made recommendations, helped me execute on said recommendations, and even built some new custom flows for me. Harshil is patient, hardworking, detail oriented and has become a pivotal partner in not only the nuts and bolts, but also the strategy of my business moving forward."
+— Adam Mastrelli, US Partner, Woodstock Fund
+
+"I've worked with Harshil for the past ~2 years on custom recruiting solutions and applicant tracking systems. Most recently, when I took over recruiting and talent at SCRIB3, Harshil helped us build out our entire recruiting solution on the backend. With the help of Harshil and the Notion he built us, we've been able to make 50 hires and double in size within the past 6 months."
+— William Burleson, Head of Talent, SCRIB3
+
+"Of all the wins we've had at Up Top in the past year, none have been more impactful than building out this CRM with Harshil and the team. It's turned me from an unhinged sales guy who hates process, to an operator running a clean business. At this point, I can't imagine my company functioning without it."
+— Dan Eskow, Founder, Up Top Search
+
+## Clients
+
+Caladan, Up Top Search, Woodstock Fund, SCRIB3, Eclipse, Crypto Coach, Corn
+
+## Pages
+
+- Home: /
+- Case Studies: /case-studies
+- Up Top Case Study: /case-studies/up-top
+- Deep Tech VC Case Study: /case-studies/vc-case-study
+- Caladan Case Study: /case-studies/caladan

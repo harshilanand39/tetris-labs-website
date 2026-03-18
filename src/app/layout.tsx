@@ -15,6 +15,31 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Tetris Labs',
+  description:
+    'AI automation and operations consultancy that builds custom AI-powered internal tools and agentic workflows for fast-moving teams.',
+  url: 'https://www.tetrislabs.co',
+  knowsAbout: [
+    'AI Automation',
+    'Agentic Workflows',
+    'Custom CRM',
+    'Workflow Automation',
+    'Internal Tools',
+    'Venture Capital Operations',
+    'Recruiting Systems',
+    'Knowledge Management',
+  ],
+  serviceType: [
+    'Agentic Workflow Development',
+    'AI-Powered Internal Tools',
+    'Knowledge & Intelligence Systems',
+    'Workspace Design & Audit',
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,6 +47,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );
