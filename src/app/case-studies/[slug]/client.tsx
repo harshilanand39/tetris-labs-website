@@ -4,8 +4,36 @@ import { useEffect, useState, Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { getCalApi } from '@calcom/embed-react';
-import { Tweet } from 'react-tweet';
+import { useTweet, EmbeddedTweet, TweetNotFound } from 'react-tweet';
 import { CASE_STUDIES, TESTIMONIALS, getCaseStudy, type CaseStudy } from '../data';
+
+/* ─── Safe Tweet wrapper to fix react-tweet crash ─── */
+function SafeTweet({ id }: { id: string }) {
+  const { data, error, isLoading } = useTweet(id);
+
+  if (isLoading) {
+    return <div style={{ height: 200, background: 'rgba(26,11,46,0.03)', borderRadius: '0.75rem' }} />;
+  }
+
+  if (error || !data) {
+    return <TweetNotFound error={error} />;
+  }
+
+  // Ensure all standard entities exist as arrays to prevent 'r is not iterable' crash in react-tweet
+  const sanitizedTweet = {
+    ...data,
+    entities: {
+      hashtags: data.entities?.hashtags || [],
+      symbols: data.entities?.symbols || [],
+      user_mentions: data.entities?.user_mentions || [],
+      urls: data.entities?.urls || [],
+      media: data.entities?.media,
+    },
+  };
+
+  return <EmbeddedTweet tweet={sanitizedTweet} />;
+}
+
 
 /* ─── Animation ─── */
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
@@ -361,7 +389,7 @@ function CaseBody({ cs }: { cs: CaseStudy }) {
                 <div style={{ display: 'grid', gridTemplateColumns: rc.tweetIds.length > 1 ? 'repeat(auto-fit, minmax(320px, 1fr))' : '1fr', gap: '1rem', alignItems: 'start' }}>
                   {rc.tweetIds.map(id => (
                     <Suspense key={id} fallback={<div style={{ height: 200, background: 'rgba(26,11,46,0.03)', borderRadius: '0.75rem' }} />}>
-                      <Tweet id={id} />
+                      <SafeTweet id={id} />
                     </Suspense>
                   ))}
                 </div>
