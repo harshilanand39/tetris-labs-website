@@ -4,14 +4,14 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Tetris Labs | Turn How Your Team Works Into AI-Powered Systems",
   description:
-    "We map your operational chaos, identify every bottleneck, and build custom AI-powered internal tools and agentic workflows — so your team can focus on what actually moves the needle.",
+    "We implement customized agent workflows around your talent process, so you hire faster, spend less, and retain IP to scale.",
   icons: {
     icon: "/images/tetris-logo.png",
   },
   openGraph: {
     title: "Tetris Labs | Turn How Your Team Works Into AI-Powered Systems",
     description:
-      "We map your operational chaos, identify every bottleneck, and build custom AI-powered internal tools and agentic workflows — so your team can focus on what actually moves the needle.",
+      "We implement customized agent workflows around your talent process, so you hire faster, spend less, and retain IP to scale.",
   },
 };
 

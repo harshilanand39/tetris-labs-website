@@ -473,7 +473,7 @@ function SiteFooter() {
             Tetris Labs
           </span>
           <p style={{ fontFamily: "'DM Mono', monospace", color: 'rgba(255,255,255,0.5)', textTransform: 'lowercase', fontSize: '1rem' }}>
-            We build AI-powered systems that let great teams scale
+            The fastest path to the right hire.
           </p>
         </div>
 

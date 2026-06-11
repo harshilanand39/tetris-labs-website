@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tetris Talent | AI-Powered Talent Systems for Teams That Scale</title>
+  <meta name="description" content="We partner with inspiring companies to build AI-powered talent systems — executive strategy, talent acquisition, and operations & insights solutions that let great teams scale.">
+  <meta property="og:title" content="Tetris Talent | AI-Powered Talent Systems for Teams That Scale">
+  <meta property="og:description" content="We partner with inspiring companies to build AI-powered talent systems — executive strategy, talent acquisition, and operations & insights solutions that let great teams scale.">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Tetris Talent",
+    "description": "AI-powered talent systems — executive strategy, talent acquisition, and operations & insights for companies looking to retain and obtain top talent.",
+    "url": "https://www.tetristalent.co",
+    "parentOrganization": {
+      "@type": "Organization",
+      "name": "Tetris Labs",
+      "url": "https://www.tetrislabs.co"
+    },
+    "serviceType": [
+      "Talent Strategy",
+      "Talent Acquisition",
+      "Operations & Insights",
+      "Executive Workforce Planning"
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- PRELOADER — Tetris pieces fall to form TT -->
+  <div class="preloader" id="preloader">
+    <canvas id="preloader-canvas"></canvas>
+    <div class="preloader-text" id="preloader-text">tetris talent</div>
+  </div>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor"></div>
+
+  <!-- DIAGONAL GRID OVERLAY -->
+  <div class="grid-overlay"></div>
+
+  <!-- FIXED HEADER -->
+  <header class="header">
+    <a href="#" class="wordmark">tetris talent</a>
+    <a href="#" data-cal-link="neil-gadhok-zcm5vm/30min" data-cal-config='{"layout":"month_view"}' class="button button-primary">request a demo</a>
+  </header>
+
+  <!-- RIGHT-SIDE SECTION NAV -->
+  <nav class="section-nav">
+    <div class="section-nav-item" data-target="mission">
+      <span class="section-nav-number">01</span>
+      <span class="section-nav-label">mission & vision</span>
+    </div>
+    <div class="section-nav-item" data-target="services">
+      <span class="section-nav-number">02</span>
+      <span class="section-nav-label">what we do</span>
+    </div>
+    <div class="section-nav-item" data-target="approach">
+      <span class="section-nav-number">03</span>
+      <span class="section-nav-label">how we do it</span>
+    </div>
+    <div class="section-nav-item" data-target="results">
+      <span class="section-nav-number">04</span>
+      <span class="section-nav-label">results</span>
+    </div>
+    <div class="section-nav-item" data-target="edge">
+      <span class="section-nav-number">05</span>
+      <span class="section-nav-label">our edge</span>
+    </div>
+    <div class="section-nav-item" data-target="contact">
+      <span class="section-nav-number">06</span>
+      <span class="section-nav-label">contact</span>
+    </div>
+  </nav>
+
+  <!-- BOTTOM-RIGHT SECTION BADGE -->
+  <div class="section-badge">
+    <span class="section-badge-number">00</span>
+    <span class="section-badge-name">home</span>
+  </div>
+
+  <!-- SCROLL CONTAINER -->
+  <main class="scroll-container">
+
+    <!-- ============ HERO ============ -->
+    <section class="section hero" id="hero">
+      <h1 class="hero-headline animate-in fade-up">
+        The fastest path<br>
+        <span class="highlight">to the right hire.</span>
+      </h1>
+
+      <p class="hero-subhead animate-in fade-up delay-1">
+        We implement customized agent workflows around your talent process, so you hire faster, spend less, and retain IP to scale.
+      </p>
+
+      <div class="hero-ctas animate-in fade-up delay-2">
+        <a href="#" data-cal-link="neil-gadhok-zcm5vm/30min" data-cal-config='{"layout":"month_view"}' class="button button-primary">request a demo</a>
+        <a href="#approach" class="button button-outline">see how it works</a>
+      </div>
+
+      <div class="product-signal animate-in fade-up delay-3">
+        a tetris labs product. built for talent teams who can't afford to slow down.
+      </div>
+
+
+      <!-- LOGO MARQUEE -->
+      <div class="marquee-section animate-in fade-up delay-4">
+        <div class="marquee-label">trusted by talent teams at</div>
+        <div class="marquee-track">
+          <div class="marquee-inner">
+            <span class="marquee-logo">Venmo</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">DoubleVerify</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">Greenhouse</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">Paxos</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">HyperScience</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">Movable Ink</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">Celonis</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">Nomad Health</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">Bidease</span><span class="marquee-sep">&middot;</span><!-- Duplicate for seamless loop --><span class="marquee-logo">Venmo</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">DoubleVerify</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">Greenhouse</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">Paxos</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">HyperScience</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">Movable Ink</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">Celonis</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">Nomad Health</span><span class="marquee-sep">&middot;</span><span class="marquee-logo">Bidease</span><span class="marquee-sep">&middot;</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-prompt">scroll to explore</div>
+    </section>
+
+    <!-- ============ 01 — MISSION & VISION ============ -->
+    <section class="section" id="mission" data-section-number="01">
+      <div class="white-text-box animate-in fade-up">
+        <div class="label">our purpose</div>
+        <h2>We don't just fill roles.<br><span class="highlight">We build talent engines.</span></h2>
+        <p class="paragraph">
+          AI-powered strategy, acquisition, and operations & insights — designed for companies that move fast and expect more from their people function.
+        </p>
+      </div>
+
+      <div class="two-panel animate-in fade-up delay-2">
+        <div class="panel-box">
+          <div class="label">mission</div>
+          <h3>Partner with inspiring companies</h3>
+          <p class="paragraph">
+            We partner with inspiring companies looking to retain and obtain top talent. Our industry leading experience allows us to provide executive strategy, talent acquisition, and operations & insights for candidates, companies, and employees.
+          </p>
+        </div>
+        <div class="panel-box">
+          <div class="label">vision</div>
+          <h3>Efficient, effective, scalable</h3>
+          <p class="paragraph">
+            To create a highly efficient and effective people and talent function through innovative technology, industry expertise, and scalable solutions.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 02 — WHAT WE DO ============ -->
+    <section class="section" id="services" data-section-number="02">
+      <div class="white-text-box animate-in fade-up">
+        <div class="label">our services</div>
+        <h2>Full-spectrum talent operations.<br><span class="highlight">Strategy to execution.</span></h2>
+        <p class="paragraph">
+          Three pillars of service, each streamlined by AI automations and built on decades of talent leadership experience.
+        </p>
+      </div>
+
+      <div class="station-grid animate-in fade-up delay-2">
+        <div class="station-card active" data-station="strategy">
+          <span class="station-card-number">01</span>
+          <span class="station-card-label">Strategy</span>
+        </div>
+        <div class="station-card" data-station="talent">
+          <span class="station-card-number">02</span>
+          <span class="station-card-label">Talent Acquisitions</span>
+        </div>
+        <div class="station-card" data-station="hr">
+          <span class="station-card-number">03</span>
+          <span class="station-card-label">Operations & Insights</span>
+        </div>
+      </div>
+
+      <!-- Strategy Detail -->
+      <div class="station-detail animate-in fade-up delay-3" data-station="strategy" style="display: block;">
+        <div class="station-detail-title">Strategy</div>
+        <div class="station-list">
+          <div class="station-list-item">TA System Implementations and Management</div>
+          <div class="station-list-item">Interview Best Practice Enablement</div>
+          <div class="station-list-item">Diversity, Equity, and Inclusion</div>
+          <div class="station-list-item">Employer Branding / Talent Marketing</div>
+          <div class="station-list-item">Continuous Process Improvement</div>
+          <div class="station-list-item">Executive Workforce Planning</div>
+        </div>
+      </div>
+
+      <!-- Talent Acquisitions Detail -->
+      <div class="station-detail" data-station="talent" style="display: none;">
+        <div class="station-detail-title">Talent Acquisitions</div>
+        <div class="station-list">
+          <div class="station-list-item">Sourcing / Hiring</div>
+          <div class="station-list-item">Candidate Experience</div>
+          <div class="station-list-item">Interview Process Management</div>
+          <div class="station-list-item">Scheduling</div>
+          <div class="station-list-item">Offer Negotiation</div>
+          <div class="station-list-item">Vendor Management</div>
+        </div>
+      </div>
+
+      <!-- Operations & Insights Detail -->
+      <div class="station-detail" data-station="hr" style="display: none;">
+        <div class="station-detail-title">Operations & Insights</div>
+        <div class="station-list">
+          <div class="station-list-item">Custom Reporting Dashboards</div>
+          <div class="station-list-item">Real-Time Pipeline Visibility</div>
+          <div class="station-list-item">Candidate Scoring & Evaluation</div>
+          <div class="station-list-item">ATS & CRM Automation</div>
+          <div class="station-list-item">Source Performance Tracking</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 03 — HOW WE DO IT ============ -->
+    <section class="section" id="approach" data-section-number="03">
+      <div class="approach-content">
+
+        <div class="approach-header animate-in fade-up">
+          <div class="section-label">how we do it</div>
+          <h2>One system.<br><span class="highlight">The output of a full team.</span></h2>
+          <p class="approach-intro">Every engagement runs on a coordinated workflow — agents handle the volume and the waiting loops, Tetris Talent handles the relationships. Click any phase to see how.</p>
+        </div>
+
+        <div class="phases-list animate-in fade-up delay-1">
+
+          <div class="phase-step" data-phase="d">
+            <div class="phase-step-header">
+              <div class="phase-step-left">
+                <span class="phase-num">0</span>
+                <div class="phase-step-info">
+                  <span class="phase-step-title">Onboarding + Kickoff</span>
+                  <span class="phase-step-desc">Every system, portal, and workflow set up before a single role opens.</span>
+                </div>
+              </div>
+              <div class="phase-step-right">
+                <span class="phase-step-days">5–10 days</span>
+                <span class="phase-chevron">+</span>
+              </div>
+            </div>
+            <div class="phase-step-body">
+              <div class="phase-track">
+                <div class="track-col">
+                  <div class="track-label track-label--agent">agent handles</div>
+                  <ul>
+                    <li>ATS, CRM &amp; Slack auto-provisioned on contract close</li>
+                    <li>Client portal access configured automatically</li>
+                    <li>Onboarding packet generated and delivered</li>
+                    <li>Weekly pipeline reports auto-generated from ATS data</li>
+                  </ul>
+                </div>
+                <div class="track-col">
+                  <div class="track-label track-label--human">tetris talent handles</div>
+                  <ul>
+                    <li>Kickoff call — SLAs, communication norms, escalation paths</li>
+                    <li>Reporting cadence sign-off with client stakeholders</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-step" data-phase="1">
+            <div class="phase-step-header">
+              <div class="phase-step-left">
+                <span class="phase-num">1</span>
+                <div class="phase-step-info">
+                  <span class="phase-step-title">Job Brief &amp; Templates</span>
+                  <span class="phase-step-desc">Role requirements locked, scorecards built, agency fully briefed before sourcing starts.</span>
+                </div>
+              </div>
+              <div class="phase-step-right">
+                <span class="phase-step-days">3–7 days</span>
+                <span class="phase-chevron">+</span>
+              </div>
+            </div>
+            <div class="phase-step-body">
+              <div class="phase-track">
+                <div class="track-col">
+                  <div class="track-label track-label--agent">agent handles</div>
+                  <ul>
+                    <li>Drafts JD, scorecard, and intake doc from role template + comp data</li>
+                    <li>Headcount approval auto-routed in HRIS</li>
+                    <li>Req auto-opens in ATS on approval</li>
+                    <li>Intake doc delivered to agency with confirmation tracking</li>
+                  </ul>
+                </div>
+                <div class="track-col">
+                  <div class="track-label track-label--human">tetris talent handles</div>
+                  <ul>
+                    <li>Briefing call with hiring manager — requirements, culture signals, non-negotiables</li>
+                    <li>Final JD and scorecard approval with client</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-step" data-phase="2">
+            <div class="phase-step-header">
+              <div class="phase-step-left">
+                <span class="phase-num">2</span>
+                <div class="phase-step-info">
+                  <span class="phase-step-title">Sourcing &amp; Screening</span>
+                  <span class="phase-step-desc">Agents run the pipeline. We stay on the phone with candidates.</span>
+                </div>
+              </div>
+              <div class="phase-step-right">
+                <span class="phase-step-days">5–10 days</span>
+                <span class="phase-chevron">+</span>
+              </div>
+            </div>
+            <div class="phase-step-body">
+              <div class="phase-track">
+                <div class="track-col">
+                  <div class="track-label track-label--agent">agent handles</div>
+                  <ul>
+                    <li>AI surfaces candidates via intent signals, org charts, network mapping</li>
+                    <li>Automated outreach sequences run in parallel</li>
+                    <li>Resumes pre-scored against scorecard before human review</li>
+                    <li>Structured feedback auto-sent to agency within SLA</li>
+                    <li>Candidate status updates triggered automatically</li>
+                  </ul>
+                </div>
+                <div class="track-col">
+                  <div class="track-label track-label--human">tetris talent handles</div>
+                  <ul>
+                    <li>Shortlist review and final approval</li>
+                    <li>Every candidate phone screen — motivation, comp fit, culture read. This stays human.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-step" data-phase="3">
+            <div class="phase-step-header">
+              <div class="phase-step-left">
+                <span class="phase-num">3</span>
+                <div class="phase-step-info">
+                  <span class="phase-step-title">Interviews</span>
+                  <span class="phase-step-desc">Zero scheduling friction. Every interviewer accountable. Debrief ready before it starts.</span>
+                </div>
+              </div>
+              <div class="phase-step-right">
+                <span class="phase-step-days">7–14 days</span>
+                <span class="phase-chevron">+</span>
+              </div>
+            </div>
+            <div class="phase-step-body">
+              <div class="phase-track">
+                <div class="track-col">
+                  <div class="track-label track-label--agent">agent handles</div>
+                  <ul>
+                    <li>All scheduling via Greenhouse/Calendly — no back-and-forth</li>
+                    <li>Assessments auto-sent, collected, and scored</li>
+                    <li>Scorecard reminders + Slack nudges for every missing submission</li>
+                    <li>Pre-debrief summary: scorecard rollup, split votes flagged</li>
+                    <li>Outcome notifications auto-sent to agency and candidate</li>
+                  </ul>
+                </div>
+                <div class="track-col">
+                  <div class="track-label track-label--human">tetris talent handles</div>
+                  <ul>
+                    <li>Debrief facilitation — hire/no-hire decision with hiring panel</li>
+                    <li>Agency relationship management through the process</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-step" data-phase="4">
+            <div class="phase-step-header">
+              <div class="phase-step-left">
+                <span class="phase-num">4</span>
+                <div class="phase-step-info">
+                  <span class="phase-step-title">Offer &amp; Close</span>
+                  <span class="phase-step-desc">Agents handle every document and notification. We close the candidate.</span>
+                </div>
+              </div>
+              <div class="phase-step-right">
+                <span class="phase-step-days">3–7 days</span>
+                <span class="phase-chevron">+</span>
+              </div>
+            </div>
+            <div class="phase-step-body">
+              <div class="phase-track">
+                <div class="track-col">
+                  <div class="track-label track-label--agent">agent handles</div>
+                  <ul>
+                    <li>Live comp benchmarks pulled automatically</li>
+                    <li>Approval routing in HRIS</li>
+                    <li>Offer letter auto-generated and sent via DocuSign</li>
+                    <li>On acceptance: ATS, agency, team, and HRIS all updated — automatically</li>
+                  </ul>
+                </div>
+                <div class="track-col">
+                  <div class="track-label track-label--human">tetris talent handles</div>
+                  <ul>
+                    <li>Verbal offer call — this is a relationship moment. No agent here.</li>
+                    <li>Negotiation — counter language drafted by agent, delivered by us</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="approach-callout animate-in fade-up delay-2">
+          Most steps in this process have <span class="callout-stat">high automation potential</span>. The ones that don't are where relationships get built — and that's where Tetris Talent focuses.
+        </div>
+
+
+      </div>
+    </section>
+
+    <section class="section" id="results" data-section-number="04">
+      <div class="results-header animate-in fade-up">
+        <div class="section-label">the numbers</div>
+        <h2>20+ years. 120+ clients.<br><span class="highlight">The receipts.</span></h2>
+      </div>
+
+      <div class="phases-list animate-in fade-up delay-1">
+
+        <!-- Business & Sales -->
+        <div class="phase-step" data-phase="business">
+          <div class="phase-step-header">
+            <div class="phase-step-left">
+              <div class="phase-step-info">
+                <span class="phase-step-title">Business &amp; Sales</span>
+                <span class="phase-step-desc">Win rates, fill rates, and repeat business across 120+ client engagements.</span>
+              </div>
+            </div>
+            <div class="phase-step-right">
+              <span class="phase-step-days">7 metrics</span>
+              <span class="phase-chevron">+</span>
+            </div>
+          </div>
+          <div class="phase-step-body">
+            <div class="result-list">
+              <div class="result-row"><span class="result-metric">Fill Rate</span><span class="result-value highlight-cyan">85%+</span></div>
+              <div class="result-row"><span class="result-metric">Time to Fill</span><span class="result-value highlight-cyan">&lt;20 days</span></div>
+              <div class="result-row"><span class="result-metric">Submittal-to-Interview Rate</span><span class="result-value highlight-cyan">80%+</span></div>
+              <div class="result-row"><span class="result-metric">Interview-to-Offer Rate</span><span class="result-value highlight-cyan">65%+</span></div>
+              <div class="result-row"><span class="result-metric">Offer Acceptance Rate</span><span class="result-value highlight-cyan">90%+</span></div>
+              <div class="result-row"><span class="result-metric">Repeat Business Rate</span><span class="result-value highlight-cyan">85%+</span></div>
+              <div class="result-row"><span class="result-metric">Client Win Rate</span><span class="result-value highlight-cyan">90%+</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Delivery -->
+        <div class="phase-step" data-phase="delivery">
+          <div class="phase-step-header">
+            <div class="phase-step-left">
+              <div class="phase-step-info">
+                <span class="phase-step-title">Delivery</span>
+                <span class="phase-step-desc">Speed, quality, and throughput from first brief to offer accepted.</span>
+              </div>
+            </div>
+            <div class="phase-step-right">
+              <span class="phase-step-days">7 metrics</span>
+              <span class="phase-chevron">+</span>
+            </div>
+          </div>
+          <div class="phase-step-body">
+            <div class="result-list">
+              <div class="result-row"><span class="result-metric">Time to First Candidate</span><span class="result-value highlight-cyan">&lt;48 hrs</span></div>
+              <div class="result-row"><span class="result-metric">Candidates per Hire</span><span class="result-value highlight-cyan">5–7</span></div>
+              <div class="result-row"><span class="result-metric">Submitted → Interview</span><span class="result-value highlight-cyan">80%+</span></div>
+              <div class="result-row"><span class="result-metric">Interview → Final</span><span class="result-value highlight-cyan">75%+</span></div>
+              <div class="result-row"><span class="result-metric">Final → Offer</span><span class="result-value highlight-cyan">80%+</span></div>
+              <div class="result-row"><span class="result-metric">Offer → Hire</span><span class="result-value highlight-cyan">90%+</span></div>
+              <div class="result-row"><span class="result-metric">Req Load per Recruiter</span><span class="result-value highlight-cyan">10+ reqs</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Revenue -->
+        <div class="phase-step" data-phase="revenue">
+          <div class="phase-step-header">
+            <div class="phase-step-left">
+              <div class="phase-step-info">
+                <span class="phase-step-title">Revenue</span>
+                <span class="phase-step-desc">Economics per recruiter, per req, and across the full pipeline.</span>
+              </div>
+            </div>
+            <div class="phase-step-right">
+              <span class="phase-step-days">4 metrics</span>
+              <span class="phase-chevron">+</span>
+            </div>
+          </div>
+          <div class="phase-step-body">
+            <div class="result-list">
+              <div class="result-row"><span class="result-metric">Revenue per Recruiter</span><span class="result-value highlight-cyan">$1M+</span></div>
+              <div class="result-row"><span class="result-metric">Average Fee %</span><span class="result-value highlight-cyan">30%+</span></div>
+              <div class="result-row"><span class="result-metric">Revenue per Req</span><span class="result-value highlight-cyan">$50K+</span></div>
+              <div class="result-row"><span class="result-metric">Pipeline Value</span><span class="result-value highlight-cyan">5x+ coverage</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Candidate Experience -->
+        <div class="phase-step" data-phase="candidate">
+          <div class="phase-step-header">
+            <div class="phase-step-left">
+              <div class="phase-step-info">
+                <span class="phase-step-title">Candidate Experience</span>
+                <span class="phase-step-desc">How candidates feel about the process — and whether they drop out.</span>
+              </div>
+            </div>
+            <div class="phase-step-right">
+              <span class="phase-step-days">2 metrics</span>
+              <span class="phase-chevron">+</span>
+            </div>
+          </div>
+          <div class="phase-step-body">
+            <div class="result-list">
+              <div class="result-row"><span class="result-metric">Candidate NPS</span><span class="result-value highlight-cyan">60+</span></div>
+              <div class="result-row"><span class="result-metric">Drop-off Rate</span><span class="result-value highlight-cyan">&lt;10%</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ 05 — OUR EDGE ============ -->
+    <section class="section section--edge" id="edge" data-section-number="05">
+      <div class="edge-lead animate-in fade-up">
+        <div class="section-label">why us</div>
+        <h2>Our Edge.</h2>
+        <p class="edge-lead-tagline">Nobody treats recruiting like a science. We do.</p>
+        <p class="edge-lead-body">
+          20+ years of experience placing talent at companies that matter, backed by agentic technology built in-house and improving every day. Human in the loop where it counts. Automated everywhere it doesn't.
+        </p>
+      </div>
+      <div id="agent-dashboard" class="agent-dashboard-wrap animate-in fade-up delay-2"></div>
+    </section>
+
+    <!-- ============ 06 — CONTACT ============ -->
+    <section class="section" id="contact" data-section-number="06">
+      <div class="contact-content">
+        <div class="contact-backref animate-in fade-up">still have questions? we're happy to talk.</div>
+        <div class="section-label animate-in fade-up">get in touch</div>
+        <h2 class="animate-in fade-up delay-1">Ready to build your<br>talent system?</h2>
+        <p class="paragraph animate-in fade-up delay-2">
+          Let's talk about how AI-powered talent infrastructure can transform the way your team hires, retains, and scales.
+        </p>
+        <a href="#" data-cal-link="neil-gadhok-zcm5vm/30min" data-cal-config='{"layout":"month_view"}' class="button button-primary animate-in fade-up delay-3">book a call</a>
+        <div class="contact-email animate-in fade-up delay-4">hello@tetristalent.co</div>
+        <div class="social-links animate-in fade-up delay-5">
+          <a href="#">linkedin</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+      <div class="footer-brand">
+        <div class="footer-wordmark">tetris talent</div>
+        <div class="footer-sub">a tetris labs product</div>
+      </div>
+      <div class="footer-links">
+        <h4>services</h4>
+        <a href="#services">Strategy</a>
+        <a href="#services">Talent Acquisitions</a>
+        <a href="#services">Operations & Insights</a>
+      </div>
+      <div class="footer-contact">
+        <a href="mailto:hello@tetristalent.co">hello@tetristalent.co</a>
+        <a href="#">linkedin</a>
+        <a href="#">twitter</a>
+      </div>
+      <div class="footer-copyright">
+        &copy; 2026 tetris talent. a tetris labs product. all rights reserved.
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="script.js"></script>
+
+  <!-- Cal.com popup embed -->
+  <script type="text/javascript">
+    (function (C, A, L) {
+      let p = function (a, ar) { a.q.push(ar); };
+      let d = C.document;
+      C.Cal = C.Cal || function () {
+        let cal = C.Cal; let ar = arguments;
+        if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; }
+        if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); return; } p(cal, ar); return; }
+        p(cal, ar);
+      };
+    })(window, "https://app.cal.com/embed/embed.js", "init");
+
+    Cal("init", { origin: "https://cal.com" });
+    Cal("ui", {
+      theme: "dark",
+      styles: { branding: { brandColor: "#7c3aed" } },
+      hideEventTypeDetails: false
+    });
+  </script>
+</body>
+</html>
