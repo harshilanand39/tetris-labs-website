@@ -12,11 +12,12 @@ const DEMO_VIDEO_URL = 'https://drive.google.com/file/u/2/d/1dE4VTkfbr40n_-96QjQ
 
 type TrustPartner = {
   name: string;
-  sources: string[];
+  mark: string;
+  logo?: string;
 };
 
-const simpleIconUrl = (slug: string) => `https://cdn.simpleicons.org/${slug}/FFFFFF`;
-const logoSources = (simpleIconSlug?: string) => (simpleIconSlug ? [simpleIconUrl(simpleIconSlug)] : []);
+const partnerSymbol = (file: string) =>
+  `/images/partner-symbols/${file.includes('.') ? file : `${file}.svg`}`;
 
 const STATIONS_META = [
   'why us',
@@ -26,77 +27,97 @@ const STATIONS_META = [
 ];
 
 const TRUST_PARTNERS: TrustPartner[] = [
-  { name: 'Salesforce', sources: logoSources() },
-  { name: 'Nike', sources: logoSources('nike') },
-  { name: 'JP Morgan Chase', sources: logoSources('chase') },
-  { name: "Bloomingdale's", sources: logoSources() },
-  { name: 'Rolex', sources: logoSources() },
-  { name: 'Shutterstock', sources: logoSources() },
-  { name: 'DoubleVerify', sources: logoSources() },
-  { name: 'Interactive Brokers', sources: logoSources() },
-  { name: 'Stack Overflow', sources: logoSources('stackoverflow') },
-  { name: 'Betterment', sources: logoSources() },
-  { name: 'Venmo', sources: logoSources('venmo') },
-  { name: 'Skillshare', sources: logoSources('skillshare') },
-  { name: 'Trustpilot', sources: logoSources('trustpilot') },
-  { name: 'Greenhouse', sources: logoSources('greenhouse') },
-  { name: 'Moda Operandi', sources: logoSources() },
-  { name: 'Flatiron Health', sources: logoSources() },
-  { name: 'Paxos', sources: logoSources() },
-  { name: 'ZocDoc', sources: logoSources() },
-  { name: 'Thrive Global', sources: logoSources() },
-  { name: 'Weights & Biases', sources: logoSources('weightsandbiases') },
-  { name: 'Teleport', sources: logoSources() },
-  { name: 'Cursor', sources: logoSources('cursor') },
-  { name: 'Pika Labs', sources: logoSources() },
-  { name: 'Clay', sources: logoSources() },
-  { name: 'Inflection AI', sources: logoSources() },
-  { name: 'Codeium', sources: logoSources('windsurf') },
-  { name: 'Verkada', sources: logoSources() },
-  { name: 'Exa', sources: logoSources() },
-  { name: 'Cartesia', sources: logoSources() },
-  { name: 'MultiOn', sources: logoSources() },
-  { name: 'Runway', sources: logoSources() },
-  { name: 'Vapi', sources: logoSources() },
-  { name: 'Nooks', sources: logoSources() },
-  { name: 'SandboxAQ', sources: logoSources() },
-  { name: 'Arkham Intelligence', sources: logoSources() },
-  { name: 'OnDeck', sources: logoSources() },
-  { name: 'Voyage AI', sources: logoSources() },
-  { name: 'LeafLink', sources: logoSources() },
-  { name: 'TripleLift', sources: logoSources() },
-  { name: 'HyperScience', sources: logoSources() },
-  { name: 'Nanonets', sources: logoSources() },
+  { name: 'Salesforce', mark: 'SF', logo: partnerSymbol('salesforce') },
+  { name: 'Nike', mark: 'NI', logo: partnerSymbol('nike') },
+  { name: 'JP Morgan Chase', mark: 'JP', logo: partnerSymbol('chase') },
+  { name: "Bloomingdale's", mark: 'BL', logo: partnerSymbol('bloomingdales.png') },
+  { name: 'Rolex', mark: 'RX', logo: partnerSymbol('rolex.png') },
+  { name: 'Shutterstock', mark: 'ST', logo: partnerSymbol('shutterstock.png') },
+  { name: 'DoubleVerify', mark: 'DV', logo: partnerSymbol('doubleverify.png') },
+  { name: 'Interactive Brokers', mark: 'IB', logo: partnerSymbol('interactive-brokers.png') },
+  { name: 'Stack Overflow', mark: 'SO', logo: partnerSymbol('stackoverflow') },
+  { name: 'Betterment', mark: 'BT', logo: partnerSymbol('betterment.png') },
+  { name: 'Venmo', mark: 'VE', logo: partnerSymbol('venmo.png') },
+  { name: 'Skillshare', mark: 'SS', logo: partnerSymbol('skillshare.png') },
+  { name: 'Trustpilot', mark: 'TP', logo: partnerSymbol('trustpilot') },
+  { name: 'Greenhouse', mark: 'GH', logo: partnerSymbol('greenhouse') },
+  { name: 'Moda Operandi', mark: 'MO', logo: partnerSymbol('moda-operandi') },
+  { name: 'Flatiron Health', mark: 'FH', logo: partnerSymbol('flatiron-health.png') },
+  { name: 'Paxos', mark: 'PX', logo: partnerSymbol('paxos.png') },
+  { name: 'ZocDoc', mark: 'ZD', logo: partnerSymbol('zocdoc.png') },
+  { name: 'Thrive Global', mark: 'TG', logo: partnerSymbol('thrive-global.png') },
+  { name: 'Weights & Biases', mark: 'W&B', logo: partnerSymbol('weightsandbiases') },
+  { name: 'Teleport', mark: 'TP', logo: partnerSymbol('teleport.png') },
+  { name: 'Cursor', mark: 'CU', logo: partnerSymbol('cursor') },
+  { name: 'Pika Labs', mark: 'PK', logo: partnerSymbol('pika.png') },
+  { name: 'Clay', mark: 'CL', logo: partnerSymbol('clay.png') },
+  { name: 'Inflection AI', mark: 'IA', logo: partnerSymbol('inflection.png') },
+  { name: 'Codeium', mark: 'CO', logo: partnerSymbol('windsurf') },
+  { name: 'Verkada', mark: 'VK', logo: partnerSymbol('verkada.png') },
+  { name: 'Exa', mark: 'EX', logo: partnerSymbol('exa.png') },
+  { name: 'Cartesia', mark: 'CA', logo: partnerSymbol('cartesia.png') },
+  { name: 'MultiOn', mark: 'MO', logo: partnerSymbol('multion.png') },
+  { name: 'Runway', mark: 'RW', logo: partnerSymbol('runway.png') },
+  { name: 'Vapi', mark: 'VA', logo: partnerSymbol('vapi') },
+  { name: 'Nooks', mark: 'NO', logo: partnerSymbol('nooks.png') },
+  { name: 'SandboxAQ', mark: 'AQ', logo: partnerSymbol('sandboxaq.png') },
+  { name: 'Arkham Intelligence', mark: 'AI', logo: partnerSymbol('arkham.png') },
+  { name: 'OnDeck', mark: 'OD', logo: partnerSymbol('ondeck.png') },
+  { name: 'Voyage AI', mark: 'VA', logo: partnerSymbol('voyage.png') },
+  { name: 'LeafLink', mark: 'LL', logo: partnerSymbol('leaflink.png') },
+  { name: 'TripleLift', mark: 'TL', logo: partnerSymbol('triplelift.png') },
+  { name: 'HyperScience', mark: 'HS', logo: partnerSymbol('hyperscience') },
+  { name: 'Nanonets', mark: 'NN', logo: partnerSymbol('nanonets') },
 ];
 
 function PartnerLogo({ partner }: { partner: TrustPartner }) {
-  const [sourceIndex, setSourceIndex] = useState(0);
-  const source = partner.sources[sourceIndex];
+  const [logoFailed, setLogoFailed] = useState(false);
+  const showLogo = partner.logo && !logoFailed;
 
-  if (!source) return null;
+  if (showLogo) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={partner.logo}
+        alt=""
+        aria-hidden="true"
+        style={{
+          width: 'clamp(1.15rem, 1.9vw, 1.65rem)',
+          height: 'clamp(1.15rem, 1.9vw, 1.65rem)',
+          objectFit: 'contain',
+          background: 'transparent',
+          filter: 'brightness(0) invert(1) grayscale(1)',
+          opacity: 0.92,
+          flexShrink: 0,
+        }}
+        onError={() => setLogoFailed(true)}
+      />
+    );
+  }
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      key={source}
-      src={source}
-      alt=""
+    <span
       aria-hidden="true"
       style={{
-        height: 'clamp(1rem, 1.75vw, 1.5rem)',
-        aspectRatio: '1 / 1',
-        width: 'auto',
-        maxWidth: '1.5rem',
-        objectFit: 'contain',
-        background: 'transparent',
-        filter: 'brightness(0) invert(1) grayscale(1)',
-        opacity: 0.9,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 'clamp(1.15rem, 1.9vw, 1.65rem)',
+        height: 'clamp(1.15rem, 1.9vw, 1.65rem)',
+        border: '1.2px solid currentColor',
+        borderRadius: '0.2rem',
+        background: 'rgba(255,255,255,0.08)',
+        color: 'currentColor',
+        fontFamily: "'DM Mono', monospace",
+        fontSize: 'clamp(0.5rem, 0.65vw, 0.66rem)',
+        fontWeight: 700,
+        lineHeight: 1,
+        letterSpacing: '0',
         flexShrink: 0,
       }}
-      onError={() => {
-        setSourceIndex((current) => current + 1);
-      }}
-    />
+    >
+      {partner.mark}
+    </span>
   );
 }
 
@@ -548,7 +569,7 @@ function ProblemDetailCard({ pair }: { pair: (typeof PROBLEM_PAIRS)[0] }) {
         </svg>
       </div>
 
-      {/* With Tetris Labs - bottom section */}
+      {/* With Tetris Talent - bottom section */}
       <div
         style={{
           padding: '1.75rem 1.5rem',
@@ -941,7 +962,7 @@ export default function Home() {
                   letterSpacing: '-0.02em',
                 }}
               >
-                Tetris Labs
+                Tetris Talent
               </span>
             </a>
             {/* Mobile: station selector in nav */}
@@ -1561,7 +1582,7 @@ export default function Home() {
                       Systems that never sleep.
                     </h2>
                     <p className="body-text">
-                      Tetris Labs pairs experienced recruiting judgment with
+                      Tetris Talent pairs experienced recruiting judgment with
                       intelligent hiring infrastructure, so every candidate gets
                       context, every client gets momentum, and no good match gets
                       buried in a spreadsheet.
@@ -2087,7 +2108,7 @@ export default function Home() {
                   className="text-white/25 text-xs"
                   style={{ fontFamily: "'DM Mono', monospace" }}
                 >
-                  &copy;2026 tetris labs
+                  &copy;2026 tetris talent
                 </p>
                 <button
                   onClick={() => goStation(0)}

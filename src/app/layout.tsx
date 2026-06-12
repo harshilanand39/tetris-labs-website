@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Tetris Labs | Turn How Your Team Works Into AI-Powered Systems",
+  title: "Tetris Talent | Turn How Your Team Works Into AI-Powered Systems",
   description:
     "We implement customized agent workflows around your talent process, so you hire faster, spend less, and retain IP to scale.",
   icons: {
     icon: "/images/tetris-logo.png",
   },
   openGraph: {
-    title: "Tetris Labs | Turn How Your Team Works Into AI-Powered Systems",
+    title: "Tetris Talent | Turn How Your Team Works Into AI-Powered Systems",
     description:
       "We implement customized agent workflows around your talent process, so you hire faster, spend less, and retain IP to scale.",
   },
@@ -18,10 +18,10 @@ export const metadata: Metadata = {
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'Tetris Labs',
+  name: 'Tetris Talent',
   description:
     'AI automation and operations consultancy that builds custom AI-powered internal tools and agentic workflows for fast-moving teams.',
-  url: 'https://www.tetrislabs.co',
+  url: 'https://www.tetristalent.co',
   knowsAbout: [
     'AI Automation',
     'Agentic Workflows',

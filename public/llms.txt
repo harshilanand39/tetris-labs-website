@@ -1,8 +1,8 @@
-# Tetris Labs
+# Tetris Talent
 
 > We implement customized agent workflows around your talent process, so you hire faster, spend less, and retain IP to scale.
 
-Tetris Labs is an AI automation and operations consultancy. We build custom internal tools, agentic workflows, and AI-powered systems for fast-moving teams — helping them scale without adding headcount.
+Tetris Talent is an AI automation and operations consultancy. We build custom internal tools, agentic workflows, and AI-powered systems for fast-moving teams — helping them scale without adding headcount.
 
 ## What We Do
 
