@@ -123,22 +123,22 @@ function PartnerLogo({ partner }: { partner: TrustPartner }) {
 
 const TESTIMONIALS = [
   {
-    quote: "Working with Harshil was an absolute dream. My contacts, documents and advisory services framework was literally ALL over the place. In a short period of time Harshil listened to me, made recommendations, helped me execute on said recommendations, and even built some new custom flows for me. Harshil is patient, hardworking, detail oriented and has become a pivotal partner in not only the nuts and bolts, but also the strategy of my business moving forward.",
-    name: "Adam Mastrelli",
-    title: "US Partner, Woodstock Fund",
-    photo: "/images/adam-mastrelli.png",
+    quote: "Placeholder testimonial copy about how Tetris Talent helped the team move faster, keep candidates organized, and reduce manual follow-up. Replace this with an approved client quote before launch.",
+    name: "Client Name",
+    title: "Role, Company",
+    initials: "CN",
   },
   {
-    quote: "I've worked with Harshil for the past ~2 years on custom recruiting solutions and applicant tracking systems. Most recently, when I took over recruiting and talent at SCRIB3, Harshil helped us build out our entire recruiting solution on the backend and has been extremely helpful with tweaks and updates after going live. With the help of Harshil and the Notion he built us, we've been able to make 50 hires and double in size within the past 6 months.",
-    name: "William Burleson",
-    title: "Head of Talent, SCRIB3",
-    photo: "/images/william-burleson.png",
+    quote: "Placeholder testimonial copy about a hiring workflow that became clearer, more reliable, and easier for the team to manage across sourcing, screening, and client updates.",
+    name: "Talent Leader",
+    title: "Head of Talent, Company",
+    initials: "TL",
   },
   {
-    quote: "Of all the wins we've had at Up Top in the past year, none have been more impactful than building out this CRM with Harshil and the team. It's turned me from an unhinged sales guy who hates process, to an operator running a clean business. At this point, I can't imagine my company functioning without it. Harshil was extremely helpful in walking me through the discovery process, suggesting new features, and delivering on solutions to exactly what I needed to maximize efficiency and organization.",
-    name: "Dan Eskow",
-    title: "Founder, Up Top Search",
-    photo: "/images/dan-eskow.png",
+    quote: "Placeholder testimonial copy about turning scattered recruiting operations into a cleaner system with better visibility, faster decisions, and fewer dropped handoffs.",
+    name: "Hiring Partner",
+    title: "Founder, Company",
+    initials: "HP",
   },
 ];
 
@@ -1768,18 +1768,27 @@ export default function Home() {
                               {TESTIMONIALS[activeTestimonial].quote}
                             </p>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                              <img
-                                src={TESTIMONIALS[activeTestimonial].photo}
-                                alt={TESTIMONIALS[activeTestimonial].name}
+                              <div
+                                aria-hidden="true"
                                 style={{
                                   width: 44,
                                   height: 44,
                                   borderRadius: '50%',
-                                  objectFit: 'cover',
                                   flexShrink: 0,
                                   border: '2px solid rgba(34,211,238,0.4)',
+                                  background: 'rgba(34,211,238,0.12)',
+                                  color: '#22D3EE',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  fontFamily: "'DM Mono', monospace",
+                                  fontSize: '0.75rem',
+                                  fontWeight: 700,
+                                  letterSpacing: '0',
                                 }}
-                              />
+                              >
+                                {TESTIMONIALS[activeTestimonial].initials}
+                              </div>
                               <div>
                                 <span
                                   style={{
