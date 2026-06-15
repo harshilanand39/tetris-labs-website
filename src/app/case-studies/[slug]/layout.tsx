@@ -9,8 +9,8 @@ export async function generateMetadata({
   const { slug } = await params;
   const cs = getCaseStudy(slug);
   return {
-    title: cs?.client ? `${cs.client} Case Study — Tetris Talent` : 'Case Study — Tetris Talent',
-    description: cs?.challenge?.slice(0, 160) ?? 'See how Tetris Talent built systems that helped teams scale without adding headcount.',
+    title: cs?.client ? `${cs.client} Case Study — Tetris Labs` : 'Case Study — Tetris Labs',
+    description: cs?.challenge?.slice(0, 160) ?? 'See how Tetris Labs built systems that helped teams scale without adding headcount.',
   };
 }
 

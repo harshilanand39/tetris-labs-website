@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef, type FormEvent } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { getCalApi } from '@calcom/embed-react';
 
@@ -8,280 +8,273 @@ import { getCalApi } from '@calcom/embed-react';
 const BG_TILE =
   'https://cdn.prod.website-files.com/66ffd660becd2fa4ef990307/66ffd660becd2fa4ef99031a_background-tile-05.svg';
 
-const DEMO_VIDEO_URL = 'https://drive.google.com/file/u/2/d/1dE4VTkfbr40n_-96QjQtMXSqVWWTC3CV/view?usp=sharing';
-
-type TrustPartner = {
-  name: string;
-  mark: string;
-  logo?: string;
-};
-
-const partnerSymbol = (file: string) =>
-  `/images/partner-symbols/${file.includes('.') ? file : `${file}.svg`}`;
-
 const STATIONS_META = [
   'why us',
+  'what we build',
+  'who we serve',
+  'results',
   'testimonials',
   'how we work',
-  'who we are',
+  'our edge',
 ];
 
-const TRUST_PARTNERS: TrustPartner[] = [
-  { name: 'Salesforce', mark: 'SF', logo: partnerSymbol('salesforce') },
-  { name: 'Nike', mark: 'NI', logo: partnerSymbol('nike') },
-  { name: 'JP Morgan Chase', mark: 'JP', logo: partnerSymbol('chase') },
-  { name: "Bloomingdale's", mark: 'BL', logo: partnerSymbol('bloomingdales.png') },
-  { name: 'Rolex', mark: 'RX', logo: partnerSymbol('rolex.png') },
-  { name: 'Shutterstock', mark: 'ST', logo: partnerSymbol('shutterstock.png') },
-  { name: 'DoubleVerify', mark: 'DV', logo: partnerSymbol('doubleverify.png') },
-  { name: 'Interactive Brokers', mark: 'IB', logo: partnerSymbol('interactive-brokers.png') },
-  { name: 'Stack Overflow', mark: 'SO', logo: partnerSymbol('stackoverflow') },
-  { name: 'Betterment', mark: 'BT', logo: partnerSymbol('betterment.png') },
-  { name: 'Venmo', mark: 'VE', logo: partnerSymbol('venmo.png') },
-  { name: 'Skillshare', mark: 'SS', logo: partnerSymbol('skillshare.png') },
-  { name: 'Trustpilot', mark: 'TP', logo: partnerSymbol('trustpilot') },
-  { name: 'Greenhouse', mark: 'GH', logo: partnerSymbol('greenhouse') },
-  { name: 'Moda Operandi', mark: 'MO', logo: partnerSymbol('moda-operandi') },
-  { name: 'Flatiron Health', mark: 'FH', logo: partnerSymbol('flatiron-health.png') },
-  { name: 'Paxos', mark: 'PX', logo: partnerSymbol('paxos.png') },
-  { name: 'ZocDoc', mark: 'ZD', logo: partnerSymbol('zocdoc.png') },
-  { name: 'Thrive Global', mark: 'TG', logo: partnerSymbol('thrive-global.png') },
-  { name: 'Weights & Biases', mark: 'W&B', logo: partnerSymbol('weightsandbiases') },
-  { name: 'Teleport', mark: 'TP', logo: partnerSymbol('teleport.png') },
-  { name: 'Cursor', mark: 'CU', logo: partnerSymbol('cursor') },
-  { name: 'Pika Labs', mark: 'PK', logo: partnerSymbol('pika.png') },
-  { name: 'Clay', mark: 'CL', logo: partnerSymbol('clay.png') },
-  { name: 'Inflection AI', mark: 'IA', logo: partnerSymbol('inflection.png') },
-  { name: 'Codeium', mark: 'CO', logo: partnerSymbol('windsurf') },
-  { name: 'Verkada', mark: 'VK', logo: partnerSymbol('verkada.png') },
-  { name: 'Exa', mark: 'EX', logo: partnerSymbol('exa.png') },
-  { name: 'Cartesia', mark: 'CA', logo: partnerSymbol('cartesia.png') },
-  { name: 'MultiOn', mark: 'MO', logo: partnerSymbol('multion.png') },
-  { name: 'Runway', mark: 'RW', logo: partnerSymbol('runway.png') },
-  { name: 'Vapi', mark: 'VA', logo: partnerSymbol('vapi') },
-  { name: 'Nooks', mark: 'NO', logo: partnerSymbol('nooks.png') },
-  { name: 'SandboxAQ', mark: 'AQ', logo: partnerSymbol('sandboxaq.png') },
-  { name: 'Arkham Intelligence', mark: 'AI', logo: partnerSymbol('arkham.png') },
-  { name: 'OnDeck', mark: 'OD', logo: partnerSymbol('ondeck.png') },
-  { name: 'Voyage AI', mark: 'VA', logo: partnerSymbol('voyage.png') },
-  { name: 'LeafLink', mark: 'LL', logo: partnerSymbol('leaflink.png') },
-  { name: 'TripleLift', mark: 'TL', logo: partnerSymbol('triplelift.png') },
-  { name: 'HyperScience', mark: 'HS', logo: partnerSymbol('hyperscience') },
-  { name: 'Nanonets', mark: 'NN', logo: partnerSymbol('nanonets') },
+const TRUST_PARTNERS = [
+  { name: 'Caladan', src: '/images/clients/Caladan Logo@4x.png' },
+  { name: 'Corn', src: '/images/clients/corn_logo.png' },
+  { name: 'Crypto Coach', src: '/images/clients/Crypto Coach Brand Assets (10)@4x.png' },
+  { name: 'Crypto Coach', src: '/images/clients/Crypto Coach Brand Assets (9)@4x.png' },
+  { name: 'Crypto Coach', src: '/images/clients/Crypto Coach Chaos to Clarity@4x.png' },
+  { name: 'Eclipse', src: '/images/clients/Eclipse Logo Lockup@4x.png' },
+  { name: 'Woodstock', src: '/images/clients/Woodstock Fund Logo@4x.png' },
 ];
 
-function PartnerLogo({ partner }: { partner: TrustPartner }) {
-  const [logoFailed, setLogoFailed] = useState(false);
-  const showLogo = partner.logo && !logoFailed;
-
-  if (showLogo) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={partner.logo}
-        alt=""
-        aria-hidden="true"
-        style={{
-          width: 'clamp(1.15rem, 1.9vw, 1.65rem)',
-          height: 'clamp(1.15rem, 1.9vw, 1.65rem)',
-          objectFit: 'contain',
-          background: 'transparent',
-          filter: 'brightness(0) invert(1) grayscale(1)',
-          opacity: 0.92,
-          flexShrink: 0,
-        }}
-        onError={() => setLogoFailed(true)}
-      />
-    );
-  }
-
-  return (
-    <span
-      aria-hidden="true"
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 'clamp(1.15rem, 1.9vw, 1.65rem)',
-        height: 'clamp(1.15rem, 1.9vw, 1.65rem)',
-        border: '1.2px solid currentColor',
-        borderRadius: '0.2rem',
-        background: 'rgba(255,255,255,0.08)',
-        color: 'currentColor',
-        fontFamily: "'DM Mono', monospace",
-        fontSize: 'clamp(0.5rem, 0.65vw, 0.66rem)',
-        fontWeight: 700,
-        lineHeight: 1,
-        letterSpacing: '0',
-        flexShrink: 0,
-      }}
-    >
-      {partner.mark}
-    </span>
-  );
-}
+const CASE_STUDIES = [
+  {
+    slug: 'up-top',
+    client: 'Up Top',
+    stats: [
+      { value: '$3M+', label: 'revenue' },
+      { value: '400+', label: 'clients' },
+      { value: '0', label: 'headcount added' },
+    ],
+    title: 'Systems that helped Up Top scale to over $3M in revenue and 400+ clients',
+    description: 'What we built: Automated talent pipeline, client tracking system, custom ATS, cross-tool workflow integrations, and an onboarding engine that scaled without adding headcount.',
+    tags: ['Talent Pipeline', 'Custom ATS', 'Client CRM', 'Workflow Automations', 'Onboarding Engine'],
+  },
+  {
+    slug: 'vc-case-study',
+    client: 'Deep Tech VC',
+    stats: [
+      { value: '$50M', label: 'AUM' },
+      { value: '50+', label: 'portfolio cos.' },
+      { value: '11', label: 'workflows rebuilt' },
+    ],
+    title: "Rebuilding a VC's entire operating stack — from the inside out",
+    description: 'What we built: AI-powered deal sourcing, automated KYB/KYC closing, institutional knowledge RAG bot, unified portfolio data sync, and an end-to-end event management system.',
+    tags: ['Venture Capital', 'AI Agents', 'Deal Flow Automation', 'KYB/KYC', 'Portfolio Management'],
+  },
+  {
+    slug: 'caladan',
+    client: 'Caladan',
+    stats: [
+      { value: '$2B+', label: 'daily trading volume' },
+      { value: '9,500+', label: 'interactions structured' },
+      { value: '5hrs', label: 'weekly reporting saved' },
+    ],
+    title: 'Turning 9,500+ fragmented interactions into one intelligent operating system.',
+    description: 'A crypto firm processing $2B+ in daily trading volume had a CRM no one wanted to use. 3,500+ company records, freeform meeting notes, disconnected tools — and a team flying blind on pipeline performance.',
+    tags: ['CRM & Data Infrastructure', 'Crypto Trading', 'Market Making', 'AI Automation'],
+  },
+];
 
 const TESTIMONIALS = [
   {
-    quote: "Placeholder testimonial copy about how Tetris Talent helped the team move faster, keep candidates organized, and reduce manual follow-up. Replace this with an approved client quote before launch.",
-    name: "Client Name",
-    title: "Role, Company",
-    initials: "CN",
+    quote: "Working with Harshil was an absolute dream. My contacts, documents and advisory services framework was literally ALL over the place. In a short period of time Harshil listened to me, made recommendations, helped me execute on said recommendations, and even built some new custom flows for me. Harshil is patient, hardworking, detail oriented and has become a pivotal partner in not only the nuts and bolts, but also the strategy of my business moving forward.",
+    name: "Adam Mastrelli",
+    title: "US Partner, Woodstock Fund",
+    photo: "/images/adam-mastrelli.png",
   },
   {
-    quote: "Placeholder testimonial copy about a hiring workflow that became clearer, more reliable, and easier for the team to manage across sourcing, screening, and client updates.",
-    name: "Talent Leader",
-    title: "Head of Talent, Company",
-    initials: "TL",
+    quote: "I've worked with Harshil for the past ~2 years on custom recruiting solutions and applicant tracking systems. Most recently, when I took over recruiting and talent at SCRIB3, Harshil helped us build out our entire recruiting solution on the backend and has been extremely helpful with tweaks and updates after going live. With the help of Harshil and the Notion he built us, we've been able to make 50 hires and double in size within the past 6 months.",
+    name: "William Burleson",
+    title: "Head of Talent, SCRIB3",
+    photo: "/images/william-burleson.png",
   },
   {
-    quote: "Placeholder testimonial copy about turning scattered recruiting operations into a cleaner system with better visibility, faster decisions, and fewer dropped handoffs.",
-    name: "Hiring Partner",
-    title: "Founder, Company",
-    initials: "HP",
+    quote: "Of all the wins we've had at Up Top in the past year, none have been more impactful than building out this CRM with Harshil and the team. It's turned me from an unhinged sales guy who hates process, to an operator running a clean business. At this point, I can't imagine my company functioning without it. Harshil was extremely helpful in walking me through the discovery process, suggesting new features, and delivering on solutions to exactly what I needed to maximize efficiency and organization.",
+    name: "Dan Eskow",
+    title: "Founder, Up Top Search",
+    photo: "/images/dan-eskow.png",
   },
 ];
 
 const PROBLEM_PAIRS = [
   {
-    problem: 'AI-Powered Talent Discovery',
+    problem: 'Manual Ops Overload',
     problemDesc:
-      'Agencies manually search LinkedIn, wait for inbound, and recycle the same candidate pool every search.',
-    solution: 'Continuous candidate intelligence',
+      'Your team is burning 20+ hours a week on work that should run automatically — status updates, reporting, tracking, chasing people for information. It\u2019s not what you hired them for.',
+    solution: 'Agentic Automation',
     solutionDesc:
-      "Our systems continuously scan, score, and surface top-tier candidates - before they're even looking.",
+      'We identify every repetitive workflow and replace it with AI-powered systems that run 24/7. Your team reclaims hours every week to focus on the work that actually requires them.',
   },
   {
-    problem: 'Your Team, Not Your Vendor',
+    problem: 'Fragmented Tool Stack',
     problemDesc:
-      'Brief handoff, recruiter disappears, then random resumes show up weeks later with zero context.',
-    solution: 'A recruiter embedded in your process',
+      'Your ops live across five different tools and nothing talks to anything else. Context gets lost between handoffs. Decisions get missed. Your best people spend too much time just staying in sync.',
+    solution: 'A Unified Intelligence Layer',
     solutionDesc:
-      'A dedicated recruiter embeds into your team. Your hiring process is our process - no handoffs, no starting from scratch.',
+      'We build a single, AI-powered workspace that connects your tools, surfaces the right information at the right time, and mirrors how your team actually thinks and works.',
   },
   {
-    problem: 'Speed Without Cutting Corners',
+    problem: 'Knowledge Locked in People\u2019s Heads',
     problemDesc:
-      '3-6 weeks to shortlist. Slow feedback loops. Candidates go cold while you wait.',
-    solution: 'Shortlists in days',
+      'Your processes, frameworks, and institutional knowledge live in the minds of two or three key people. If they\u2019re sick, busy, or gone — that knowledge goes with them.',
+    solution: 'Systems That Think Like Your Team',
     solutionDesc:
-      'Sourcing, screening, and scoring are systemized - so speed never comes at the cost of quality.',
+      'We encode your team\u2019s decision-making patterns, workflows, and company ethos directly into AI-powered systems — so your knowledge compounds instead of walking out the door.',
   },
   {
-    problem: 'Invested In Your Growth',
+    problem: 'No Time for Strategic Work',
     problemDesc:
-      'Transactional. Send resumes, collect fees, move on. Zero investment in long-term hiring success.',
-    solution: 'An extension of your team',
+      'You\u2019re brilliant at what you do. But every week, your best hours go to ops, reporting, onboarding, and coordination. You\u2019re running the business instead of building it.',
+    solution: 'Strategic Focus, Finally',
     solutionDesc:
-      "Higher close rates, lower drop-off, candidates who actually fit - because we know what you need.",
+      'With your ops running on autopilot through AI, your team gets the headspace to focus on the work that actually creates value — and the decisions that actually move the needle.',
+  },
+];
+
+const BUILD_CATEGORIES = [
+  {
+    num: '01',
+    title: 'Agentic Workflows',
+    desc: 'Repetitive processes that run autonomously \u2014 without anyone pushing a button.',
+    items: [
+      'Client and candidate status updates that send themselves',
+      'Intake and routing flows that qualify and assign work automatically',
+      'Automated reporting (weekly digests, KPI summaries, pipeline reports)',
+      'Cross-tool sync agents (CRM \u2194 Notion \u2194 Email \u2194 Slack)',
+      'Follow-up sequences and nurture flows that run on logic, not memory',
+    ],
+  },
+  {
+    num: '02',
+    title: 'AI-Powered Internal Tools',
+    desc: 'Custom-built command centres, dashboards, and intelligence systems tailored to how your team actually works.',
+    items: [
+      'Pipeline and deal flow command centres',
+      'Candidate and talent tracking systems',
+      'Client and project management hubs',
+      'OKR and milestone dashboards',
+      'Custom CRMs built on Notion or Airtable with AI layers on top',
+    ],
+  },
+  {
+    num: '03',
+    title: 'Knowledge & Intelligence Systems',
+    desc: 'Your team\u2019s institutional knowledge, encoded and made accessible \u2014 not buried in docs no one reads.',
+    items: [
+      'Company wiki with AI-powered search and navigation',
+      'Decision frameworks and operational playbooks',
+      'Onboarding systems that encode your culture and process',
+      'AI-powered meeting notes and action item tracking',
+      'Process documentation that actually stays up to date',
+    ],
+  },
+  {
+    num: '04',
+    title: 'Workspace Design & Audit',
+    desc: 'We start every engagement here. Map your current state, find the gaps, and design a blueprint before we build anything.',
+    items: [
+      'Operational landscape mapping',
+      'Bottleneck and AI-acceleration audit',
+      'Tool stack rationalization (stop paying for what you don\u2019t use)',
+      "Workspace architecture blueprint (the 'StoryMap')",
+      'Team workflow and behaviour pattern analysis',
+    ],
+  },
+];
+
+const AUDIENCES = [
+  {
+    name: 'Recruiting & Talent Teams',
+    desc: "You\u2019re placing candidates, managing clients, and tracking a hundred moving pieces at once — across spreadsheets, emails, and tools that don\u2019t talk to each other. We build the system that ties it all together.",
+    items: [
+      'Custom ATS with AI-powered candidate tracking and matching',
+      'Client pipeline CRM with automated updates and follow-ups',
+      'Automated candidate status communications',
+      'Billing and placement tracking dashboards',
+      'Onboarding flows for new consultants that encode your methodology',
+    ],
+  },
+  {
+    name: 'Investment & Deal Teams',
+    desc: "You\u2019re running a portfolio or a pipeline with a lean team. Deal flow is messy, reporting is manual, and due diligence takes too long. We build the command centre that fixes all three.",
+    items: [
+      'AI-powered deal flow intake, scoring, and routing',
+      'Portfolio monitoring dashboards with automated alerts',
+      'LP and stakeholder reporting automation',
+      'Due diligence knowledge bases with AI-powered research layers',
+    ],
+  },
+  {
+    name: 'Fast-Moving Operators',
+    desc: "You\u2019re building something serious with a lean team. Everyone is in execution mode, and nobody has time to build the systems that would make execution easier. We do that part.",
+    items: [
+      'Automated coordination and status tracking across your team',
+      'Project and client management systems that scale with you',
+      'Weekly reporting that writes itself',
+      'Onboarding systems that work even when you\u2019re too busy to babysit them',
+    ],
   },
 ];
 
 const PROCESS_STEPS = [
   {
-    num: '0',
-    title: 'Onboarding + Kickoff',
-    timeline: 'day 0',
-    desc: 'Every system, portal, and workflow set up before a single role opens.',
-    agentItems: [
-      'ATS, CRM & Slack auto-provisioned on contract close',
-      'Client portal access configured automatically',
-      'Onboarding packet generated and delivered',
-      'Weekly pipeline reports auto-generated from ATS data',
-    ],
-    teamItems: [
-      'Kickoff call - SLAs, communication norms, escalation paths',
-      'Reporting cadence sign-off with client stakeholders',
+    num: '01',
+    title: 'Map',
+    subtitle: 'Understand before we build anything.',
+    desc: "We sit with your team \u2014 leadership, the people actually doing the work \u2014 and map your complete operational landscape. We identify every bottleneck, every manual process, every place where AI can accelerate or automate. Nothing gets built until we\u2019ve seen the full picture.",
+    items: [
+      'Operational landscape sessions with your team',
+      'Current process mapping and visualization',
+      'AI-acceleration opportunity audit',
+      'Bottleneck prioritization by impact and effort',
     ],
   },
   {
-    num: '1',
-    title: 'Job Brief & Templates',
-    timeline: 'day 1-3',
-    desc: 'Role requirements locked, scorecards built, agency fully briefed before sourcing starts.',
-    agentItems: [
-      'Drafts JD, scorecard, and intake doc from role template + comp data',
-      'Headcount approval auto-routed in HRIS',
-      'Req auto-opens in ATS on approval',
-      'Intake doc delivered to agency with confirmation tracking',
-    ],
-    teamItems: [
-      'Briefing call with hiring manager - requirements, culture signals, non-negotiables',
-      'Final JD and scorecard approval with client',
+    num: '02',
+    title: 'Design',
+    subtitle: 'Blueprint before we build.',
+    desc: "We translate everything we learned in the Map phase into a concrete system design \u2014 your StoryMap. This is a detailed blueprint of every tool, workflow, and automation we\u2019ll build, mapped to how your team actually works. You approve it before we write a single line of code.",
+    items: [
+      'StoryMap: your custom system architecture',
+      'Workflow diagrams and tool integration plans',
+      'Automation specifications with clear scope',
+      'Phased build roadmap with deliverables and timelines',
     ],
   },
   {
-    num: '2',
-    title: 'Sourcing & Screening',
-    timeline: 'day 3+',
-    desc: 'Agents run the pipeline. We stay on the phone with candidates.',
-    agentItems: [
-      'AI surfaces candidates via intent signals, org charts, network mapping',
-      'Automated outreach sequences run in parallel',
-      'Resumes pre-scored against scorecard before human review',
-      'Structured feedback auto-sent to agency within SLA',
-      'Candidate status updates triggered automatically',
-    ],
-    teamItems: [
-      'Shortlist review and final approval',
-      'Every candidate phone screen - motivation, comp fit, culture read. This stays human.',
+    num: '03',
+    title: 'Build',
+    subtitle: 'We build fast. You see progress every week.',
+    desc: "This is where our proprietary AI-powered delivery system comes in. Three years of frameworks, patterns, and hard-won knowledge \u2014 systematized. You get weekly progress updates and a working system in weeks, not months. Faster delivery. Lower cost. No surprises.",
+    items: [
+      'Agentic workflow development',
+      'Custom internal tool builds',
+      'System integrations and automations',
+      'Weekly progress updates and working demos',
     ],
   },
   {
-    num: '3',
-    title: 'Interviews',
-    timeline: 'day 3+',
-    desc: 'Zero scheduling friction. Every interviewer accountable. Debrief ready before it starts.',
-    agentItems: [
-      'All scheduling via Greenhouse/Calendly - no back-and-forth',
-      'Assessments auto-sent, collected, and scored',
-      'Scorecard reminders + Slack nudges for every missing submission',
-      'Pre-debrief summary: scorecard rollup, split votes flagged',
-      'Outcome notifications auto-sent to agency and candidate',
-    ],
-    teamItems: [
-      'Debrief facilitation - hire/no-hire decision with hiring panel',
-      'Agency relationship management through the process',
-    ],
-  },
-  {
-    num: '4',
-    title: 'Offer & Close',
-    timeline: 'by end of month 1',
-    desc: 'Agents handle every document and notification. We close the candidate.',
-    agentItems: [
-      'Live comp benchmarks pulled automatically',
-      'Approval routing in HRIS',
-      'Offer letter auto-generated and sent via DocuSign',
-      'On acceptance: ATS, agency, team, and HRIS all updated automatically',
-    ],
-    teamItems: [
-      'Verbal offer call - this is a relationship moment. No agent here.',
-      'Negotiation - counter language drafted by agent, delivered by us',
+    num: '04',
+    title: 'Embed',
+    subtitle: "We don\u2019t just hand it over. We make it stick.",
+    desc: "A system is only as good as the team using it. We train your team on everything we\u2019ve built, create documentation your people will actually use, and provide 30 days of post-launch support to make sure everything runs the way it should.",
+    items: [
+      'Team training and onboarding sessions',
+      'Documentation and knowledge base creation',
+      '30-day post-launch support',
+      "Full system handoff \u2014 it\u2019s yours, completely",
     ],
   },
 ];
 
-const WHO_WE_ARE_STATS = [
+const EDGE_ITEMS = [
   {
-    value: '1:1',
-    label: 'recruiter partnership',
-    desc: 'Experienced recruiters stay close to the human details that decide whether a hire actually works.',
+    title: 'Faster delivery',
+    desc: "Weeks, not months. Our systems allow us to move at a pace traditional agencies simply can\u2019t match.",
   },
   {
-    value: '24/7',
-    label: 'candidate operations',
-    desc: 'Intelligent systems keep sourcing, screening, follow-ups, and pipeline hygiene moving around the clock.',
+    title: 'Lower cost',
+    desc: 'Same quality, lower price. We pass on the efficiency gains from our approach directly to our clients.',
   },
   {
-    value: '100s',
-    label: 'of placements',
-    desc: 'Our team has helped companies find the right people across technical, operational, and go-to-market roles.',
+    title: 'Institutional knowledge that compounds',
+    desc: "Every client makes us sharper. Our frameworks improve with every engagement \u2014 and you benefit from everything we\u2019ve learned.",
   },
   {
-    value: '120+',
-    label: 'companies supported',
-    desc: 'We bring pattern recognition from high-growth teams, lean operators, and talent organizations that move fast.',
+    title: 'Deep operational expertise',
+    desc: "We\u2019ve built systems for some of the most complex, fast-moving, high-stakes teams in tech. Whatever your team is dealing with, we\u2019ve seen harder.",
   },
 ];
 
@@ -569,7 +562,7 @@ function ProblemDetailCard({ pair }: { pair: (typeof PROBLEM_PAIRS)[0] }) {
         </svg>
       </div>
 
-      {/* With Tetris Talent - bottom section */}
+      {/* With Tetris Labs - bottom section */}
       <div
         style={{
           padding: '1.75rem 1.5rem',
@@ -599,7 +592,7 @@ function ProblemDetailCard({ pair }: { pair: (typeof PROBLEM_PAIRS)[0] }) {
               letterSpacing: '0.1em',
             }}
           >
-            tetris talent
+            with tetris labs
           </span>
         </div>
         <h4
@@ -634,8 +627,8 @@ function ProblemDetailCard({ pair }: { pair: (typeof PROBLEM_PAIRS)[0] }) {
 export default function Home() {
   useEffect(() => {
     (async function () {
-      const strategyCal = await getCalApi({ namespace: 'strategy-call' });
-      strategyCal('ui', { hideEventTypeDetails: false, layout: 'month_view' });
+      const cal = await getCalApi({ namespace: 'discovery-call' });
+      cal('ui', { hideEventTypeDetails: false, layout: 'month_view' });
     })();
   }, []);
 
@@ -653,10 +646,7 @@ export default function Home() {
   const [navVisible, setNavVisible] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
   const [selectorOpen, setSelectorOpen] = useState(false);
-  const [demoModalOpen, setDemoModalOpen] = useState(false);
-  const [demoEmail, setDemoEmail] = useState('');
-  const [demoSubmitting, setDemoSubmitting] = useState(false);
-  const [demoError, setDemoError] = useState('');
+  const [activeAudience, setActiveAudience] = useState(0);
   const [activeProblem, setActiveProblem] = useState(0);
 
   /* auto-advance problem selector on station 1 */
@@ -668,13 +658,44 @@ export default function Home() {
     return () => clearInterval(id);
   }, [station, activeProblem]);
 
+  const [activeBuild, setActiveBuild] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
+  const [activeCaseStudy, setActiveCaseStudy] = useState(0);
+  const [caseStudyDir, setCaseStudyDir] = useState(1);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [testimonialDir, setTestimonialDir] = useState(1);
 
-  /* auto-advance station 2: Testimonials */
+  /* auto-advance station 2: What We Build */
   useEffect(() => {
     if (station !== 2) return;
+    const id = setInterval(() => {
+      setActiveBuild((prev) => (prev + 1) % BUILD_CATEGORIES.length);
+    }, 10000);
+    return () => clearInterval(id);
+  }, [station, activeBuild]);
+
+  /* auto-advance station 3: Who We Serve */
+  useEffect(() => {
+    if (station !== 3) return;
+    const id = setInterval(() => {
+      setActiveAudience((prev) => (prev + 1) % AUDIENCES.length);
+    }, 10000);
+    return () => clearInterval(id);
+  }, [station, activeAudience]);
+
+  /* auto-advance station 4: Results */
+  useEffect(() => {
+    if (station !== 4) return;
+    const id = setInterval(() => {
+      setCaseStudyDir(1);
+      setActiveCaseStudy((prev) => (prev + 1) % CASE_STUDIES.length);
+    }, 10000);
+    return () => clearInterval(id);
+  }, [station, activeCaseStudy]);
+
+  /* auto-advance station 5: Testimonials */
+  useEffect(() => {
+    if (station !== 5) return;
     const id = setInterval(() => {
       setTestimonialDir(1);
       setActiveTestimonial((prev) => (prev + 1) % TESTIMONIALS.length);
@@ -682,9 +703,9 @@ export default function Home() {
     return () => clearInterval(id);
   }, [station, activeTestimonial]);
 
-  /* auto-advance station 3: How We Work */
+  /* auto-advance station 6: How We Work */
   useEffect(() => {
-    if (station !== 3) return;
+    if (station !== 6) return;
     const id = setInterval(() => {
       setActiveStep((prev) => (prev + 1) % PROCESS_STEPS.length);
     }, 10000);
@@ -705,52 +726,20 @@ export default function Home() {
   /* go to station */
   const goStation = useCallback((s: number) => {
     if (s < 0) s = 0;
-    if (s > 5) s = 5;
+    if (s > 8) s = 8;
     stationRef.current = s;
     setStation(s);
     setHeroVisible(s === 0);
-    setNavVisible(s > 0 && s < 5);
-    setFooterVisible(s === 5);
+    setNavVisible(s > 0 && s < 8);
+    setFooterVisible(s === 8);
     setSelectorOpen(false);
     if (s === 1) setActiveProblem(0);
-    if (s === 2) setActiveTestimonial(0);
-    if (s === 3) setActiveStep(0);
+    if (s === 2) setActiveBuild(0);
+    if (s === 3) setActiveAudience(0);
+    if (s === 4) setActiveCaseStudy(0);
+    if (s === 5) setActiveTestimonial(0);
+    if (s === 6) setActiveStep(0);
   }, []);
-
-  const openDemoModal = () => {
-    setDemoError('');
-    setDemoModalOpen(true);
-  };
-
-  const closeDemoModal = () => {
-    if (demoSubmitting) return;
-    setDemoModalOpen(false);
-  };
-
-  const submitDemoRequest = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setDemoSubmitting(true);
-    setDemoError('');
-
-    try {
-      const response = await fetch('/api/demo-request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: demoEmail }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Unable to submit email.');
-      }
-
-      setDemoModalOpen(false);
-      window.open(DEMO_VIDEO_URL, '_blank', 'noopener,noreferrer');
-    } catch {
-      setDemoError('Something went wrong. Please try again.');
-    } finally {
-      setDemoSubmitting(false);
-    }
-  };
 
   /* scroll / key / touch navigation — registered once, reads station via ref */
   useEffect(() => {
@@ -941,7 +930,7 @@ export default function Home() {
             transition={{ duration: 0.5, ease: EASE_OUT }}
             className="fixed top-0 left-0 right-0 z-[110] flex items-center justify-between"
             style={{
-              padding: 'clamp(1rem, 2vh, 1.5rem) clamp(1rem, 2vw, 1.5rem)',
+              padding: 'clamp(1rem, 2vh, 1.5rem) clamp(1.25rem, 2.5vw, 2rem)',
               ...(isMobile ? { background: '#7C3AED', borderBottom: '1px solid rgba(255,255,255,0.1)' } : {}),
             }}
           >
@@ -962,7 +951,7 @@ export default function Home() {
                   letterSpacing: '-0.02em',
                 }}
               >
-                Tetris Talent
+                Tetris Labs
               </span>
             </a>
             {/* Mobile: station selector in nav */}
@@ -1045,38 +1034,17 @@ export default function Home() {
                 </AnimatePresence>
               </div>
             )}
-            <div className="hidden md:flex items-center" style={{ gap: '0.75rem' }}>
+            <div className="hidden md:flex items-center gap-6">
               <a
                 href="#"
                 className="button"
-                style={{
-                  minHeight: '2.5rem',
-                  padding: '0 1rem',
-                  fontSize: '0.875rem',
-                  whiteSpace: 'nowrap',
-                }}
-                data-cal-namespace="strategy-call"
-                data-cal-link="neil-gadhok-zcm5vm/30min"
+                style={{ minHeight: '2.75rem', fontSize: '0.875rem' }}
+                data-cal-namespace="discovery-call"
+                data-cal-link="harshil-tetris/discovery-call"
                 data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
               >
                 book a strategy call
               </a>
-              <button
-                type="button"
-                onClick={openDemoModal}
-                className="button"
-                style={{
-                  minHeight: '2.5rem',
-                  padding: '0 1rem',
-                  fontSize: '0.875rem',
-                  background: 'transparent',
-                  color: 'white',
-                  borderColor: 'white',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                request demo
-              </button>
             </div>
           </motion.nav>
         )}
@@ -1141,8 +1109,8 @@ export default function Home() {
                   marginBottom: 'clamp(1.5rem, 3vh, 3rem)',
                 }}
               >
-                Your talent partner for the age of{' '}
-                <span style={{ color: '#22D3EE' }}>intelligent hiring</span>
+                We build <span style={{ color: '#22D3EE' }}>AI-powered systems</span> that let great teams{' '}
+                scale.
               </motion.h1>
 
               {/* subheadline */}
@@ -1158,9 +1126,9 @@ export default function Home() {
                   marginBottom: 'clamp(1.5rem, 4vh, 4rem)',
                 }}
               >
-                We pair experienced recruiters with intelligent systems that source,
-                screen, and manage candidates around the clock. You get the people side of
-                recruiting with the speed of AI.
+                We map your operational chaos, identify every bottleneck, and build
+                custom AI-powered internal tools and agentic workflows so
+                your team can focus on what actually moves the needle.
               </motion.p>
 
               {/* CTAs + trust — share the same inline width */}
@@ -1173,7 +1141,6 @@ export default function Home() {
                   style={{ gap: 'clamp(0.5rem, 1.5vw, 1.25rem)' }}
                 >
                   <button
-                    type="button"
                     className="button"
                     style={{
                       fontSize: 'clamp(0.75rem, 1.1vw, 1.125rem)',
@@ -1181,15 +1148,14 @@ export default function Home() {
                       padding: '0 clamp(1rem, 2.5vw, 2.25rem)',
                       whiteSpace: 'nowrap',
                     }}
-                    data-cal-namespace="strategy-call"
-                    data-cal-link="neil-gadhok-zcm5vm/30min"
+                    data-cal-namespace="discovery-call"
+                    data-cal-link="harshil-tetris/discovery-call"
                     data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
                   >
                     book a strategy call
                   </button>
                   <button
-                    type="button"
-                    onClick={openDemoModal}
+                    onClick={() => goStation(4)}
                     className="button"
                     style={{
                       fontSize: 'clamp(0.75rem, 1.1vw, 1.125rem)',
@@ -1201,7 +1167,7 @@ export default function Home() {
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    request demo
+                    see our work
                   </button>
                 </motion.div>
 
@@ -1221,41 +1187,26 @@ export default function Home() {
                       marginBottom: '0.75rem',
                     }}
                   >
-                    20+ years of recruiting experience
+                    trusted by teams who can&apos;t afford to slow down
                   </p>
                   {/* Marquee logos — infinite seamless loop */}
                   <div style={{ overflow: 'hidden', position: 'relative' }}>
-                    <div className="marquee-logos" style={{ alignItems: 'center', gap: '2.5rem', animationDuration: '80s', width: 'max-content' }}>
+                    <div className="marquee-logos" style={{ alignItems: 'center', gap: '2.5rem', animationDuration: '20s', width: 'max-content' }}>
                       {[...TRUST_PARTNERS, ...TRUST_PARTNERS].map((p, i) => (
-                        <span
+                        <img
                           key={i}
-                          title={p.name}
+                          src={p.src}
+                          alt={p.name}
                           style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '0.5rem',
+                            height: 'clamp(1rem, 1.75vw, 1.5rem)',
+                            width: 'auto',
+                            maxWidth: '120px',
+                            objectFit: 'contain',
+                            opacity: 0.55,
+                            filter: 'brightness(0) invert(1)',
                             flexShrink: 0,
-                            color: 'white',
-                            opacity: 0.62,
-                            background: 'transparent',
                           }}
-                        >
-                          <PartnerLogo partner={p} />
-                          <span
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              height: 'clamp(1rem, 1.75vw, 1.5rem)',
-                              fontFamily: "'Inter', sans-serif",
-                              fontSize: 'clamp(0.8rem, 1vw, 0.95rem)',
-                              fontWeight: 650,
-                              letterSpacing: '0',
-                              whiteSpace: 'nowrap',
-                            }}
-                          >
-                            {p.name}
-                          </span>
-                        </span>
+                        />
                       ))}
                     </div>
                   </div>
@@ -1317,7 +1268,7 @@ export default function Home() {
 
       {/* ═══ STATIONS ═══ */}
       <AnimatePresence mode="wait">
-        {!loading && !heroVisible && station >= 1 && station <= 4 && (
+        {!loading && !heroVisible && station >= 1 && station <= 7 && (
           <motion.div
             key={`station-${station}`}
             initial={{ opacity: 0 }}
@@ -1330,7 +1281,7 @@ export default function Home() {
             {/* Station content */}
             <div
               ref={stationScrollRef}
-              className={`w-full md:w-auto ${station === 4 ? 'md:max-w-[66vw]' : 'md:max-w-[50vw]'} flex flex-col gap-5 md:gap-8 hide-scrollbar`}
+              className="w-full md:w-auto md:max-w-[50vw] flex flex-col gap-5 md:gap-8 hide-scrollbar"
               style={{
                 padding: 'clamp(3.5rem, 8vh, 5rem) clamp(1rem, 3vw, 2rem) clamp(3rem, 8vh, 5rem) clamp(1rem, 4vw, 4rem)',
                 maxHeight: '100vh',
@@ -1352,13 +1303,11 @@ export default function Home() {
                       why us
                     </div>
                     <h2 className="heading h2">
-                      Tetris treats recruiting
-                      <br />
-                      <span style={{ color: '#22D3EE' }}>like a science</span>
+                      From Operational Chaos to Strategic Momentum
                     </h2>
                     <p className="body-text">
-                      Traditional recruiting is slow, transactional, and forgettable.
-                      We built something different.
+                      We guide your shift from fighting daily ops fires to building
+                      the systems that let your team actually scale.
                     </p>
                   </motion.div>
 
@@ -1400,7 +1349,154 @@ export default function Home() {
                 </>
               )}
 
-              {/* ── Station 3: How We Work — Vertical Timeline ── */}
+              {/* ── Station 2: What We Build ── */}
+              {station === 2 && (
+                <>
+                  <motion.div
+                    custom={0}
+                    variants={boxVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="white-text-box"
+                  >
+                    <div className="label">
+                      our approach
+                    </div>
+                    <h2 className="heading h2">
+                      We don&apos;t just build tools.
+                    </h2>
+                    <h2
+                      className="heading h2"
+                      style={{ color: '#22D3EE' }}
+                    >
+                      We encode your team into AI.
+                    </h2>
+                    <p className="body-text">
+                      We&apos;re product experts and AI architects who specialize
+                      in one thing: taking how your team thinks, works, and
+                      decides — and turning that into AI-powered systems that run
+                      without you.
+                    </p>
+                  </motion.div>
+
+                  {/* Build category selector — horizontal numbered pills */}
+                  <motion.div
+                    custom={1}
+                    variants={boxVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="grid grid-cols-1 sm:grid-cols-2 gap-2"
+                  >
+                    {BUILD_CATEGORIES.map((cat, i) => {
+                      const isActive = activeBuild === i;
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => setActiveBuild(i)}
+                          className="flex items-center gap-3 text-left transition-all rounded-sm"
+                          style={{
+                            position: 'relative',
+                            overflow: 'hidden',
+                            padding: '0.875rem 1rem',
+                            border: isActive
+                              ? '1.5px solid #22D3EE'
+                              : '1.5px solid rgba(255,255,255,0.15)',
+                            background: isActive ? 'rgba(34,211,238,0.1)' : 'transparent',
+                            borderRadius: '0.25rem',
+                          }}
+                        >
+                          <span
+                            className="flex-shrink-0 w-7 h-7 rounded-sm flex items-center justify-center text-[11px]"
+                            style={{
+                              fontFamily: "'DM Mono', monospace",
+                              background: isActive ? '#22D3EE' : 'transparent',
+                              border: isActive
+                                ? '1.5px solid #22D3EE'
+                                : '1.5px solid rgba(255,255,255,0.25)',
+                              color: isActive ? 'white' : 'rgba(255,255,255,0.5)',
+                              transition: 'all 0.3s ease',
+                            }}
+                          >
+                            {cat.num}
+                          </span>
+                          <span
+                            className="font-medium text-sm leading-tight"
+                            style={{
+                              fontFamily: "'Inter', sans-serif",
+                              color: isActive ? 'white' : 'rgba(255,255,255,0.6)',
+                              transition: 'color 0.3s ease',
+                            }}
+                          >
+                            {cat.title}
+                          </span>
+                          {isActive && station === 2 && (
+                            <div
+                              key={activeBuild}
+                              className="problem-timer-bar"
+                            />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </motion.div>
+
+                  {/* Build category detail */}
+                  <motion.div
+                    custom={2}
+                    variants={boxVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={activeBuild}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -12 }}
+                        transition={{ duration: 0.3, ease: EASE_OUT }}
+                        className="station-card"
+                      >
+                        <div style={{ padding: '1.75rem 1.5rem' }}>
+                          <h3
+                            className="font-semibold mb-3"
+                            style={{
+                              fontFamily: "'Inter', sans-serif",
+                              fontSize: '1.25rem',
+                              color: '#22D3EE',
+                              lineHeight: '130%',
+                            }}
+                          >
+                            {BUILD_CATEGORIES[activeBuild].title}
+                          </h3>
+                          <p
+                            style={{
+                              fontSize: '0.9375rem',
+                              lineHeight: '170%',
+                              color: 'rgba(255,255,255,0.6)',
+                              marginBottom: '1.5rem',
+                            }}
+                          >
+                            {BUILD_CATEGORIES[activeBuild].desc}
+                          </p>
+                          <ul className="station-list">
+                            {BUILD_CATEGORIES[activeBuild].items.map((item, remvidx) => (
+                              <li key={remvidx} className="station-list-item">
+                                <svg className="bullet" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M8 3l4 4-4 4" stroke="#22D3EE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  </motion.div>
+                </>
+              )}
+
+              {/* ── Station 3: Who We Serve ── */}
               {station === 3 && (
                 <>
                   <motion.div
@@ -1412,21 +1508,415 @@ export default function Home() {
                     className="white-text-box"
                   >
                     <div className="label">
-                      how we do it
+                      who we serve
+                    </div>
+                    <h2 className="heading h2">
+                      built for teams that move fast
+                    </h2>
+                    <p className="body-text">
+                      Whether you&apos;re running a recruiting agency, a deal team,
+                      or a high-growth operation — if you&apos;re a
+                      high-velocity team with serious complexity and no dedicated
+                      ops infrastructure, we built this for you.
+                    </p>
+                  </motion.div>
+
+                  {/* Audience selector — vertical stacked buttons */}
+                  <motion.div
+                    custom={1}
+                    variants={boxVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="flex flex-col gap-1.5"
+                  >
+                    {AUDIENCES.map((aud, i) => {
+                      const isActive = activeAudience === i;
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => setActiveAudience(i)}
+                          className="flex items-center gap-3 text-left transition-all rounded-sm"
+                          style={{
+                            position: 'relative',
+                            overflow: 'hidden',
+                            padding: '0.875rem 1.25rem',
+                            border: isActive
+                              ? '1.5px solid #22D3EE'
+                              : '1.5px solid rgba(255,255,255,0.15)',
+                            background: isActive ? 'rgba(34,211,238,0.1)' : 'transparent',
+                            borderRadius: '0.25rem',
+                          }}
+                        >
+                          <span
+                            className="flex-shrink-0 w-7 h-7 rounded-sm flex items-center justify-center text-[11px]"
+                            style={{
+                              fontFamily: "'DM Mono', monospace",
+                              background: isActive ? '#22D3EE' : 'transparent',
+                              border: isActive
+                                ? '1.5px solid #22D3EE'
+                                : '1.5px solid rgba(255,255,255,0.25)',
+                              color: isActive ? 'white' : 'rgba(255,255,255,0.5)',
+                              transition: 'all 0.3s ease',
+                            }}
+                          >
+                            {String(i + 1).padStart(2, '0')}
+                          </span>
+                          <span
+                            className="font-medium text-sm"
+                            style={{
+                              fontFamily: "'Inter', sans-serif",
+                              color: isActive ? 'white' : 'rgba(255,255,255,0.6)',
+                              transition: 'color 0.3s ease',
+                            }}
+                          >
+                            {aud.name}
+                          </span>
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            className="ml-auto"
+                            style={{
+                              flexShrink: 0,
+                              opacity: isActive ? 1 : 0.3,
+                              transition: 'opacity 0.3s',
+                            }}
+                          >
+                            <path
+                              d="M9 18l6-6-6-6"
+                              stroke={isActive ? '#22D3EE' : 'white'}
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          {isActive && station === 3 && (
+                            <div
+                              key={activeAudience}
+                              className="problem-timer-bar"
+                            />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </motion.div>
+
+                  {/* Audience detail card */}
+                  <motion.div
+                    custom={2}
+                    variants={boxVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={activeAudience}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -12 }}
+                        transition={{ duration: 0.3, ease: EASE_OUT }}
+                        className="station-card"
+                      >
+                        <div style={{ padding: '1.75rem 1.5rem' }}>
+                          <h3
+                            className="font-semibold mb-3"
+                            style={{
+                              fontFamily: "'Inter', sans-serif",
+                              fontSize: '1.25rem',
+                              color: '#22D3EE',
+                              lineHeight: '130%',
+                            }}
+                          >
+                            {AUDIENCES[activeAudience].name}
+                          </h3>
+                          <p
+                            style={{
+                              fontSize: '0.9375rem',
+                              lineHeight: '170%',
+                              color: 'rgba(255,255,255,0.6)',
+                              marginBottom: '1.5rem',
+                            }}
+                          >
+                            {AUDIENCES[activeAudience].desc}
+                          </p>
+                          <ul className="station-list">
+                            {AUDIENCES[activeAudience].items.map((item, idx) => (
+                              <li key={idx} className="station-list-item">
+                                <svg className="bullet" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M8 3l4 4-4 4" stroke="#22D3EE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  </motion.div>
+                </>
+              )}
+
+              {/* ── Station 4: Results ── */}
+              {station === 4 && (
+                <>
+                  <motion.div
+                    custom={0}
+                    variants={boxVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="white-text-box"
+                  >
+                    <div className="label">
+                      results
+                    </div>
+                    <h2 className="heading h2">
+                      Results that speak for themselves.
+                    </h2>
+                    <p className="body-text">
+                      Three years. Dozens of teams. Here&apos;s what
+                      we&apos;ve actually built.
+                    </p>
+                  </motion.div>
+
+                  {/* Featured case study carousel */}
+                  <div style={{ display: 'flex', alignItems: isMobile ? 'stretch' : 'center', gap: '0.625rem', flexDirection: isMobile ? 'column' : 'row' }}>
+                    <motion.div
+                      custom={1}
+                      variants={boxVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      className="station-card"
+                      style={{ overflow: 'hidden', flex: 1 }}
+                    >
+                      {/* Badge */}
+                      <div style={{ padding: '1.75rem 1.5rem 0' }}>
+                        <span
+                          style={{
+                            fontFamily: "'DM Mono', monospace",
+                            textTransform: 'lowercase',
+                            fontSize: '0.75rem',
+                            color: '#22D3EE',
+                            background: 'rgba(34,211,238,0.15)',
+                            padding: '0.375rem 0.75rem',
+                            borderRadius: '0.25rem',
+                            letterSpacing: '0.02em',
+                            display: 'inline-block',
+                          }}
+                        >
+                          featured case study
+                        </span>
+                      </div>
+
+                      {/* Animated card content — slides up/down */}
+                      <AnimatePresence mode="wait" custom={caseStudyDir}>
+                        <motion.div
+                          key={activeCaseStudy}
+                          custom={caseStudyDir}
+                          variants={{
+                            hidden: (dir: number) => ({ opacity: 0, y: dir * 40 }),
+                            visible: { opacity: 1, y: 0 },
+                            exit: (dir: number) => ({ opacity: 0, y: dir * -40 }),
+                          }}
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit"
+                          transition={{ duration: 0.3, ease: EASE_OUT }}
+                        >
+                          {/* Stat highlights */}
+                          <div
+                            className="grid grid-cols-3 gap-px"
+                            style={{
+                              margin: '1.25rem 1.5rem',
+                              borderRadius: '0.25rem',
+                              overflow: 'hidden',
+                              background: 'rgba(255,255,255,0.08)',
+                            }}
+                          >
+                            {CASE_STUDIES[activeCaseStudy].stats.map((stat, i) => (
+                              <div
+                                key={i}
+                                className="flex flex-col items-center text-center"
+                                style={{
+                                  padding: '1.25rem 0.75rem',
+                                  background: 'rgba(255,255,255,0.03)',
+                                }}
+                              >
+                                <span
+                                  className="font-bold"
+                                  style={{
+                                    fontFamily: "'Inter', sans-serif",
+                                    fontSize: '1.5rem',
+                                    color: '#22D3EE',
+                                    lineHeight: 1.1,
+                                    letterSpacing: '-0.02em',
+                                  }}
+                                >
+                                  {stat.value}
+                                </span>
+                                <span
+                                  style={{
+                                    fontFamily: "'DM Mono', monospace",
+                                    textTransform: 'lowercase',
+                                    fontSize: '0.6875rem',
+                                    color: 'rgba(255,255,255,0.45)',
+                                    marginTop: '0.375rem',
+                                    letterSpacing: '0.02em',
+                                  }}
+                                >
+                                  {stat.label}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Description */}
+                          <div style={{ padding: '0 1.5rem 1.5rem' }}>
+                            <h3
+                              className="font-semibold mb-3"
+                              style={{
+                                fontFamily: "'Inter', sans-serif",
+                                fontSize: '1.125rem',
+                                color: 'white',
+                                lineHeight: '140%',
+                              }}
+                            >
+                              {CASE_STUDIES[activeCaseStudy].title}
+                            </h3>
+                            <p
+                              style={{
+                                fontSize: '0.9375rem',
+                                lineHeight: '170%',
+                                color: 'rgba(255,255,255,0.55)',
+                                marginBottom: '1.25rem',
+                              }}
+                            >
+                              {CASE_STUDIES[activeCaseStudy].description}
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {CASE_STUDIES[activeCaseStudy].tags.map((tag) => (
+                                <span
+                                  key={tag}
+                                  style={{
+                                    fontFamily: "'DM Mono', monospace",
+                                    textTransform: 'lowercase',
+                                    fontSize: '0.6875rem',
+                                    color: 'rgba(255,255,255,0.5)',
+                                    border: '1px solid rgba(255,255,255,0.12)',
+                                    padding: '0.375rem 0.75rem',
+                                    borderRadius: '0.25rem',
+                                    letterSpacing: '0.02em',
+                                  }}
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </motion.div>
+                      </AnimatePresence>
+
+                      {/* Timer bar */}
+                      <div style={{ position: 'relative', height: '3px', background: 'rgba(255,255,255,0.06)' }}>
+                        <div
+                          key={activeCaseStudy}
+                          className="problem-timer-bar"
+                          style={{ position: 'absolute', top: 0 }}
+                        />
+                      </div>
+
+                      {/* CTA — fixed at bottom */}
+                      <a
+                        href={`/case-studies/${CASE_STUDIES[activeCaseStudy].slug}`}
+                        className="button w-full"
+                        style={{ borderRadius: 0, margin: 0, borderLeft: 0, borderRight: 0, borderBottom: 0 }}
+                      >
+                        read case study
+                      </a>
+                    </motion.div>
+
+                    {/* ── Arrow buttons outside card ── */}
+                    <div style={{ display: 'flex', flexDirection: isMobile ? 'row' : 'column', gap: '0.5rem', justifyContent: isMobile ? 'center' : undefined }}>
+                      <motion.button
+                        aria-label="Previous case study"
+                        onClick={() => {
+                          setCaseStudyDir(-1);
+                          setActiveCaseStudy(i => (i - 1 + CASE_STUDIES.length) % CASE_STUDIES.length);
+                        }}
+                        whileHover={{ backgroundColor: 'rgba(34,211,238,0.22)', borderColor: 'rgba(34,211,238,0.7)' }}
+                        style={{
+                          width: 32, height: 32,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          background: 'rgba(34,211,238,0.08)',
+                          border: '1px solid rgba(34,211,238,0.35)',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer',
+                          color: '#22D3EE',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M3 9L7 5L11 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </motion.button>
+                      <motion.button
+                        aria-label="Next case study"
+                        onClick={() => {
+                          setCaseStudyDir(1);
+                          setActiveCaseStudy(i => (i + 1) % CASE_STUDIES.length);
+                        }}
+                        whileHover={{ backgroundColor: 'rgba(34,211,238,0.22)', borderColor: 'rgba(34,211,238,0.7)' }}
+                        style={{
+                          width: 32, height: 32,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          background: 'rgba(34,211,238,0.08)',
+                          border: '1px solid rgba(34,211,238,0.35)',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer',
+                          color: '#22D3EE',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M3 5L7 9L11 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </motion.button>
+                    </div>
+                  </div>
+
+                </>
+              )}
+
+              {/* ── Station 6: How We Work — Vertical Timeline ── */}
+              {station === 6 && (
+                <>
+                  <motion.div
+                    custom={0}
+                    variants={boxVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="white-text-box"
+                  >
+                    <div className="label">
+                      process
                     </div>
                     <h2 className="heading h3">
-                      One system
+                      How we make it happen:
                     </h2>
                     <h2
                       className="heading h2"
                       style={{ color: '#22D3EE' }}
                     >
-                      The output of a full team.
+                      The Ops Blueprint.
                     </h2>
                     <p className="body-text">
-                      Every engagement runs on a coordinated workflow - agents
-                      handle the volume and the waiting loops, Tetris Talent
-                      handles the relationships.
+                      Every engagement follows the same four-phase process.
+                      Comprehensive, fast, and tailored — because the teams
+                      we work with don&apos;t want a generic ops consultant.
+                      They want a partner who can move as fast as they do.
                     </p>
                   </motion.div>
 
@@ -1442,7 +1932,7 @@ export default function Home() {
                   >
                     {/* Step tabs — top edge of card */}
                     <div
-                      className="grid grid-cols-2 md:grid-cols-5"
+                      className="grid grid-cols-2 md:grid-cols-4"
                       style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}
                     >
                       {PROCESS_STEPS.map((step, i) => {
@@ -1455,7 +1945,7 @@ export default function Home() {
                             style={{
                               padding: '1rem 0.5rem 1.25rem',
                               background: isActive ? 'rgba(34,211,238,0.08)' : 'transparent',
-                              borderRight: i < PROCESS_STEPS.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                              borderRight: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none',
                               overflow: 'hidden',
                             }}
                           >
@@ -1512,7 +2002,7 @@ export default function Home() {
                             marginBottom: '1rem',
                           }}
                         >
-                          {PROCESS_STEPS[activeStep].timeline}
+                          {PROCESS_STEPS[activeStep].subtitle}
                         </p>
                         <p
                           style={{
@@ -1524,42 +2014,22 @@ export default function Home() {
                         >
                           {PROCESS_STEPS[activeStep].desc}
                         </p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                          <div>
-                            <span className="station-card-label">
-                              agent handles
-                            </span>
-                            <ul className="station-list">
-                              {PROCESS_STEPS[activeStep].agentItems.map((item, idx) => (
-                                <li key={idx} className="station-list-item">
-                                  <svg className="bullet" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M8 3l4 4-4 4" stroke="#22D3EE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                                  {item}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div>
-                            <span className="station-card-label">
-                              tetris talent handles
-                            </span>
-                            <ul className="station-list">
-                              {PROCESS_STEPS[activeStep].teamItems.map((item, idx) => (
-                                <li key={idx} className="station-list-item">
-                                  <svg className="bullet" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M8 3l4 4-4 4" stroke="#22D3EE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                                  {item}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
+                        <ul className="station-list">
+                          {PROCESS_STEPS[activeStep].items.map((item, idx) => (
+                            <li key={idx} className="station-list-item">
+                              <svg className="bullet" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M8 3l4 4-4 4" stroke="#22D3EE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
                       </motion.div>
                     </AnimatePresence>
                   </motion.div>
                 </>
               )}
 
-              {/* ── Station 4: Who We Are ── */}
-              {station === 4 && (
+              {/* ── Station 7: Our Edge ── */}
+              {station === 7 && (
                 <>
                   <motion.div
                     custom={0}
@@ -1570,88 +2040,123 @@ export default function Home() {
                     className="white-text-box"
                   >
                     <div className="label">
-                      who we are
+                      our edge
                     </div>
                     <h2 className="heading h2">
-                      Recruiters who know the work.
-                    </h2>
-                    <h2
-                      className="heading h2"
-                      style={{ color: '#22D3EE' }}
-                    >
-                      Systems that never sleep.
+                      We&apos;re not a traditional agency.
                     </h2>
                     <p className="body-text">
-                      Tetris Talent pairs experienced recruiting judgment with
-                      intelligent hiring infrastructure, so every candidate gets
-                      context, every client gets momentum, and no good match gets
-                      buried in a spreadsheet.
+                      And if you&apos;ve worked with one, you&apos;ll feel the
+                      difference immediately.
                     </p>
                   </motion.div>
 
+                  {/* Origin Story — accent left border card */}
                   <motion.div
                     custom={1}
                     variants={boxVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
+                    className="rounded-sm"
+                    style={{
+                      borderLeft: '3px solid #22D3EE',
+                      borderRadius: '0.25rem',
+                      background: 'rgba(255,255,255,0.03)',
+                      padding: '1.5rem 1.25rem',
+                    }}
                   >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {WHO_WE_ARE_STATS.map((item, i) => (
+                    <span
+                      style={{
+                        fontFamily: "'DM Mono', monospace",
+                        textTransform: 'lowercase',
+                        fontSize: '0.75rem',
+                        color: '#22D3EE',
+                        letterSpacing: '0.08em',
+                        display: 'block',
+                        marginBottom: '1rem',
+                      }}
+                    >
+                      the origin story
+                    </span>
+                    <div className="flex flex-col gap-3">
+                      <p style={{ fontSize: '0.875rem', lineHeight: '170%', color: 'rgba(255,255,255,0.6)' }}>
+                        We spent three years building operational systems for some
+                        of the most demanding teams in crypto — protocols moving
+                        tens of millions in treasury, VC firms managing 50+
+                        portfolio companies, talent teams scaling at startup speed
+                        with no playbook to follow. That environment built something in us.
+                      </p>
+                      <p style={{ fontSize: '0.875rem', lineHeight: '170%', color: 'rgba(255,255,255,0.6)' }}>
+                        We took everything we&apos;d learned and rebuilt how we
+                        work from the ground up — encoding our processes, playbooks,
+                        and delivery methods into a proprietary AI-powered system.
+                      </p>
+                    </div>
+                    <p
+                      className="font-semibold"
+                      style={{
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: '0.9375rem',
+                        color: '#22D3EE',
+                        lineHeight: '160%',
+                        marginTop: '1rem',
+                      }}
+                    >
+                      That system is now what every client gets. Not just crypto
+                      teams. Everyone.
+                    </p>
+                  </motion.div>
+
+                  {/* What This Means for You — 2-column grid */}
+                  <motion.div
+                    custom={2}
+                    variants={boxVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <span
+                      style={{
+                        fontFamily: "'DM Mono', monospace",
+                        textTransform: 'lowercase',
+                        fontSize: '0.75rem',
+                        color: '#22D3EE',
+                        letterSpacing: '0.08em',
+                        display: 'block',
+                        marginBottom: '0.75rem',
+                      }}
+                    >
+                      what this means for you:
+                    </span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                      {EDGE_ITEMS.map((item, i) => (
                         <div
                           key={i}
-                          className="station-card"
+                          className="rounded-sm"
                           style={{
-                            background: 'rgba(255,255,255,0.95)',
-                            borderColor: 'rgba(255,255,255,0.2)',
-                            boxShadow: '0 10px 28px rgba(0,0,0,0.12)',
-                            minHeight: '8.75rem',
-                            display: 'grid',
-                            gridTemplateColumns: 'minmax(5rem, 0.65fr) 1px minmax(0, 1.35fr)',
-                            alignItems: 'center',
-                            gap: '1rem',
-                            padding: '1.25rem',
+                            padding: '1rem 1.25rem',
+                            background: 'rgba(255,255,255,0.03)',
+                            border: '1px solid rgba(255,255,255,0.08)',
+                            borderRadius: '0.25rem',
                           }}
                         >
-                          <div>
-                            <div
-                              style={{
-                                fontFamily: "'Inter', sans-serif",
-                                fontSize: 'clamp(2.25rem, 3.8vw, 3.75rem)',
-                                fontWeight: 750,
-                                lineHeight: 0.95,
-                                color: '#22D3EE',
-                                letterSpacing: '0',
-                              }}
-                            >
-                              {item.value}
-                            </div>
-                            <div
-                              style={{
-                                marginTop: '0.5rem',
-                                fontFamily: "'DM Mono', monospace",
-                                textTransform: 'lowercase',
-                                fontSize: '0.75rem',
-                                lineHeight: 1.25,
-                                color: 'rgba(26,11,46,0.48)',
-                              }}
-                            >
-                              {item.label}
-                            </div>
-                          </div>
-                          <div
+                          <h4
+                            className="font-semibold mb-1.5"
                             style={{
-                              width: '1px',
-                              minHeight: '5.25rem',
-                              background: 'rgba(34,211,238,0.25)',
+                              fontFamily: "'Inter', sans-serif",
+                              fontSize: '0.875rem',
+                              color: 'white',
+                              lineHeight: '130%',
                             }}
-                          />
+                          >
+                            {item.title}
+                          </h4>
                           <p
                             style={{
-                              fontSize: '0.875rem',
-                              lineHeight: '165%',
-                              fontWeight: 600,
-                              color: 'rgba(26,11,46,0.88)',
+                              fontSize: '0.8125rem',
+                              lineHeight: '160%',
+                              color: 'rgba(255,255,255,0.45)',
                             }}
                           >
                             {item.desc}
@@ -1660,44 +2165,12 @@ export default function Home() {
                       ))}
                     </div>
                   </motion.div>
-
-                  <motion.div
-                    custom={2}
-                    variants={boxVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="rounded-sm"
-                    style={{
-                      border: '1.5px solid #22D3EE',
-                      borderRadius: '0.25rem',
-                      background: 'rgba(255,255,255,0.04)',
-                      padding: '1.75rem 1.5rem',
-                    }}
-                  >
-                    <p
-                      style={{
-                        fontSize: '1rem',
-                        lineHeight: '170%',
-                        color: 'rgba(255,255,255,0.68)',
-                        maxWidth: '56rem',
-                      }}
-                    >
-                      We were built for companies that need recruiting to feel
-                      sharper than a job board and more accountable than a
-                      traditional agency. One team brings the human side:
-                      calibration, judgment, candidate trust, and closing strategy.
-                      The other side is the system layer: sourcing, screening,
-                      follow-up, workflow tracking, and reporting that keeps moving
-                      even when your calendar is full.
-                    </p>
-                  </motion.div>
                 </>
               )}
 
 
-              {/* ── Station 2: Testimonials ── */}
-              {station === 2 && (
+              {/* ── Station 5: Testimonials ── */}
+              {station === 5 && (
                 <>
                   {/* Testimonials carousel */}
                   <div style={{ display: 'flex', alignItems: isMobile ? 'stretch' : 'center', gap: '0.625rem', flexDirection: isMobile ? 'column' : 'row' }}>
@@ -1768,27 +2241,18 @@ export default function Home() {
                               {TESTIMONIALS[activeTestimonial].quote}
                             </p>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                              <div
-                                aria-hidden="true"
+                              <img
+                                src={TESTIMONIALS[activeTestimonial].photo}
+                                alt={TESTIMONIALS[activeTestimonial].name}
                                 style={{
                                   width: 44,
                                   height: 44,
                                   borderRadius: '50%',
+                                  objectFit: 'cover',
                                   flexShrink: 0,
                                   border: '2px solid rgba(34,211,238,0.4)',
-                                  background: 'rgba(34,211,238,0.12)',
-                                  color: '#22D3EE',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  fontFamily: "'DM Mono', monospace",
-                                  fontSize: '0.75rem',
-                                  fontWeight: 700,
-                                  letterSpacing: '0',
                                 }}
-                              >
-                                {TESTIMONIALS[activeTestimonial].initials}
-                              </div>
+                              />
                               <div>
                                 <span
                                   style={{
@@ -1903,7 +2367,7 @@ export default function Home() {
       </AnimatePresence>
 
       {/* ═══ STATION SELECTOR (bottom) ═══ */}
-      {!loading && !heroVisible && station >= 1 && station <= 4 && !isMobile && (
+      {!loading && !heroVisible && station >= 1 && station <= 7 && !isMobile && (
         <div className="fixed z-[120]" style={{ right: '1rem', bottom: '1rem' }}>
           {/* Dropdown menu — above button on desktop, below on mobile */}
           <AnimatePresence>
@@ -2030,7 +2494,7 @@ export default function Home() {
                       lineHeight: 1.1,
                     }}
                   >
-                    Tetris Talent
+                    Tetris Labs
                   </span>
                   <p
                     className="text-white/50"
@@ -2040,7 +2504,7 @@ export default function Home() {
                       fontSize: '1rem',
                     }}
                   >
-                    Your talent partner for the age of intelligent hiring
+                    We build AI-powered systems that let great teams scale
                   </p>
                 </motion.div>
 
@@ -2055,27 +2519,12 @@ export default function Home() {
                     href="#"
                     className="button"
                     style={{ fontSize: '1rem', minHeight: '3.25rem', padding: '0 2rem' }}
-                    data-cal-namespace="strategy-call"
-                    data-cal-link="neil-gadhok-zcm5vm/30min"
+                    data-cal-namespace="discovery-call"
+                    data-cal-link="harshil-tetris/discovery-call"
                     data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
                   >
                     book a strategy call
                   </a>
-                  <button
-                    type="button"
-                    onClick={openDemoModal}
-                    className="button"
-                    style={{
-                      fontSize: '1rem',
-                      minHeight: '3.25rem',
-                      padding: '0 2rem',
-                      background: 'transparent',
-                      color: 'white',
-                      borderColor: 'white',
-                    }}
-                  >
-                    request demo
-                  </button>
                 </motion.div>
 
                 {/* Group 3: Social Links */}
@@ -2085,29 +2534,19 @@ export default function Home() {
                   transition={{ delay: 0.9, duration: 0.6 }}
                   className="flex gap-8"
                 >
-                  <a
-                    href="https://www.linkedin.com/company/tetris-talent/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white/40 text-sm hover:text-white transition-colors"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      fontFamily: "'DM Mono', monospace",
-                      textTransform: 'lowercase',
-                    }}
-                  >
-                    <svg
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      style={{ width: '1rem', height: '1rem', flexShrink: 0 }}
+                  {['x', 'telegram'].map((link) => (
+                    <a
+                      key={link}
+                      href="#"
+                      className="text-white/40 text-sm hover:text-white transition-colors"
+                      style={{
+                        fontFamily: "'DM Mono', monospace",
+                        textTransform: 'lowercase',
+                      }}
                     >
-                      <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12Zm1.78 13.02H3.56V9h3.56v11.45ZM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0Z" />
-                    </svg>
-                    linkedin
-                  </a>
+                      {link}
+                    </a>
+                  ))}
                 </motion.div>
               </div>
 
@@ -2117,7 +2556,7 @@ export default function Home() {
                   className="text-white/25 text-xs"
                   style={{ fontFamily: "'DM Mono', monospace" }}
                 >
-                  &copy;2026 tetris talent
+                  &copy;2026 tetris labs
                 </p>
                 <button
                   onClick={() => goStation(0)}
@@ -2134,146 +2573,6 @@ export default function Home() {
                 </button>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {demoModalOpen && (
-          <motion.div
-            key="demo-modal"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: EASE_OUT }}
-            className="fixed inset-0 z-[1000] flex items-center justify-center"
-            style={{ background: 'rgba(26,11,46,0.72)', padding: '1rem' }}
-            onClick={closeDemoModal}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 24, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 16, scale: 0.98 }}
-              transition={{ duration: 0.25, ease: EASE_OUT }}
-              className="relative w-full"
-              style={{
-                maxWidth: '28rem',
-                background: 'white',
-                border: '1.5px solid #22D3EE',
-                borderRadius: '0.25rem',
-                padding: '1.5rem',
-                boxShadow: '0 24px 80px rgba(0,0,0,0.28)',
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                type="button"
-                aria-label="Close demo request"
-                onClick={closeDemoModal}
-                disabled={demoSubmitting}
-                style={{
-                  position: 'absolute',
-                  top: '0.875rem',
-                  right: '0.875rem',
-                  width: '2rem',
-                  height: '2rem',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '1.5px solid rgba(26,11,46,0.16)',
-                  borderRadius: '0.25rem',
-                  background: 'transparent',
-                  color: '#1A0B2E',
-                  cursor: demoSubmitting ? 'not-allowed' : 'pointer',
-                  opacity: demoSubmitting ? 0.45 : 1,
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M3 3L11 11M11 3L3 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </button>
-
-              <div style={{ paddingRight: '2.5rem', marginBottom: '1.25rem' }}>
-                <div
-                  className="label"
-                  style={{ color: '#22D3EE', marginBottom: '0.75rem' }}
-                >
-                  request demo
-                </div>
-                <h2
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: '1.75rem',
-                    lineHeight: 1.1,
-                    fontWeight: 750,
-                    color: '#1A0B2E',
-                    letterSpacing: '0',
-                  }}
-                >
-                  Watch the demo
-                </h2>
-              </div>
-
-              <form onSubmit={submitDemoRequest}>
-                <label
-                  htmlFor="demo-email"
-                  style={{
-                    display: 'block',
-                    fontFamily: "'DM Mono', monospace",
-                    textTransform: 'lowercase',
-                    fontSize: '0.75rem',
-                    color: 'rgba(26,11,46,0.58)',
-                    marginBottom: '0.5rem',
-                  }}
-                >
-                  email
-                </label>
-                <input
-                  id="demo-email"
-                  type="email"
-                  required
-                  value={demoEmail}
-                  onChange={(e) => setDemoEmail(e.target.value)}
-                  placeholder="you@company.com"
-                  disabled={demoSubmitting}
-                  style={{
-                    width: '100%',
-                    minHeight: '3.25rem',
-                    border: '1.5px solid rgba(26,11,46,0.18)',
-                    borderRadius: '0.25rem',
-                    padding: '0 1rem',
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: '1rem',
-                    color: '#1A0B2E',
-                    outline: 'none',
-                    marginBottom: '1rem',
-                    opacity: demoSubmitting ? 0.7 : 1,
-                  }}
-                />
-                {demoError && (
-                  <p
-                    role="alert"
-                    style={{
-                      fontFamily: "'DM Mono', monospace",
-                      textTransform: 'lowercase',
-                      fontSize: '0.75rem',
-                      color: '#B20110',
-                      marginBottom: '1rem',
-                    }}
-                  >
-                    {demoError}
-                  </p>
-                )}
-                <button
-                  type="submit"
-                  className="button"
-                  disabled={demoSubmitting}
-                  style={{ width: '100%', minHeight: '3.25rem' }}
-                >
-                  {demoSubmitting ? 'submitting' : 'submit'}
-                </button>
-              </form>
-            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

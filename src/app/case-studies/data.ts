@@ -329,7 +329,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         ],
         quote:
           "The real insight wasn't any single broken process. It was that each person had built their own private system — and none of them talked to each other.",
-        quoteAttribution: 'Observation from Discovery · Tetris Talent',
+        quoteAttribution: 'Observation from Discovery · Tetris Labs',
         bodyCopy: [
           "Discovery surfaced one structural truth: the firm had four highly capable people operating as four separate firms. Data didn't flow. Decisions couldn't compound on prior knowledge. And every hour spent on manual ops was an hour not spent on the work that actually moves the needle — finding and backing the next breakthrough company.",
           'The output was a complete operational map across four functional areas: Deal Sourcing, Deal Evaluation, Investment Closing, and Portfolio Management — with clear friction points, tool dependencies, and automation opportunity for each.',
@@ -592,7 +592,7 @@ export const CASE_STUDIES: CaseStudy[] = [
           'Caladan operates across market making, venture, and structured products — each with distinct workflows, different team members, and entirely different definitions of what a "deal" looks like. We mapped each one from the ground up.',
         cards: [],
         quote: "The CRM wasn't a source of truth. It was a filing cabinet people had stopped opening.",
-        quoteAttribution: 'Observation from Discovery · Tetris Talent',
+        quoteAttribution: 'Observation from Discovery · Tetris Labs',
         bodyCopy: [
           "We started with stakeholder interviews across every department — BD, Legal, Finance, and the investment arm. The goal wasn't to understand what systems they used. It was to understand where their actual work happened and why the official CRM wasn't it. What we found: people had quietly built shadow systems to survive.",
         ],

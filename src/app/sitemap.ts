@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 
-const BASE_URL = 'https://www.tetristalent.co';
+const BASE_URL = 'https://www.tetrislabs.co';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

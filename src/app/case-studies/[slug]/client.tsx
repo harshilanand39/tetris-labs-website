@@ -68,7 +68,7 @@ function CaseNav({ scrollProgress }: { scrollProgress: number }) {
             letterSpacing: '-0.02em',
           }}
         >
-          Tetris Talent
+          Tetris Labs
         </a>
 
         <div className="hidden md:flex items-center gap-6">
@@ -470,10 +470,10 @@ function SiteFooter() {
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
           <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: 'white', fontSize: 'clamp(2.5rem,6vw,5rem)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-            Tetris Talent
+            Tetris Labs
           </span>
           <p style={{ fontFamily: "'DM Mono', monospace", color: 'rgba(255,255,255,0.5)', textTransform: 'lowercase', fontSize: '1rem' }}>
-            The fastest path to the right hire.
+            We build AI-powered systems that let great teams scale
           </p>
         </div>
 
@@ -500,7 +500,7 @@ function SiteFooter() {
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: '32rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
           <p style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.75rem', color: 'rgba(255,255,255,0.25)' }}>
-            &copy;2026 tetris talent
+            &copy;2026 tetris labs
           </p>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
